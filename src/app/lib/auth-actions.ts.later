@@ -1,0 +1,16 @@
+import { auth } from "@/app/lib/auth";
+import { headers } from "next/headers";
+
+export async function signInGithub() {
+  return await auth.api.signInSocial({
+    body: { provider: "github" },
+    headers: await headers(),
+  });
+}
+
+export async function signInGoogle() {
+  return await auth.api.signInSocial({
+    body: { provider: "google" },
+    headers: await headers(),
+  });
+}
