@@ -16,7 +16,7 @@ import {
   exportKeyPair,
   importPrivateKey,
   type ExportedKeys,
-} from "@/app/utils/asymmetricKeyManager";
+} from "@/lib/asymmetricKeyManager";
 import secureLocalStorage from "react-secure-storage";
 
 export function KeyGenerationModal({
@@ -100,7 +100,6 @@ export function KeyGenerationModal({
       // Validate the key by attempting to import it
       await importPrivateKey(privateKeyInput);
 
-      console.log(privateKeyInput);
       secureLocalStorage.setItem("privateKey", privateKeyInput);
       // If successful, close modal and pass the key back
       onCloseAction();

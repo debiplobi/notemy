@@ -6,15 +6,32 @@ import { useDisclosure } from "@mantine/hooks";
 import { IconLoader3 } from "@tabler/icons-react";
 import secureLocalStorage from "react-secure-storage";
 
-import SignIn from "@/app/components/sign-in";
-import { KeyGenerationModal } from "@/app/components/encryptionModal";
-import { AddNoteForm } from "@/app/components/AddNoteForm";
-import NotesList from "@/app/components/NotesList";
+import SignIn from "@/components/sign-in";
+import { KeyGenerationModal } from "@/components/encryptionModal";
+import { AddNoteForm } from "@/components/AddNoteForm";
+import NotesList from "@/components/NotesList";
 
-import { authClient } from "@/app/lib/auth-client";
-import { importPrivateKey } from "@/app/utils/asymmetricKeyManager";
+import { authClient } from "@/lib/auth-client";
+import { importPrivateKey } from "@/lib/asymmetricKeyManager";
+import { EditNoteForm } from "./Note";
 
 type EncryptionKeyResp = { encryptionKey: string };
+
+export interface DecryptedNoteType {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const EMPTY_NOTE: DecryptedNoteType = {
+  id: "",
+  title: "",
+  content: "",
+  createdAt: new Date(),
+  updatedAt: new Date(),
+};
 
 export default function Home() {
   /* ------------------------------------------------------------------ */
@@ -37,6 +54,14 @@ export default function Home() {
     addNoteModalOpened,
     { open: openAddNoteModal, close: closeaddNoteModal },
   ] = useDisclosure(false);
+
+  const [
+    editNoteModalOpened,
+    { open: openEditNoteModal, close: closeEditNoteModal },
+  ] = useDisclosure(false);
+
+  const [selectedNote, setSelectedNote] =
+    useState<DecryptedNoteType>(EMPTY_NOTE);
 
   /* ------------------------------------------------------------------ */
   /* Load private key from secure storage                                */
@@ -139,7 +164,6 @@ export default function Home() {
           marginBottom: "2em",
           display: "flex",
           justifyContent: "center",
-          background: "var(--mantine-color-body)",
         }}
       >
         {pubKey && (
@@ -154,7 +178,24 @@ export default function Home() {
         </Button>
       </div>
 
-      {privateKey && <NotesList userPrivateKey={privateKey} />}
+      {privateKey && pubKey && (
+        <>
+          <NotesList
+            privateKey={privateKey}
+            setSelectedNote={setSelectedNote}
+            openEditNoteModal={openEditNoteModal}
+          />
+          {selectedNote?.id !== "" && (
+            <EditNoteForm
+              opened={editNoteModalOpened}
+              onCloseAction={closeEditNoteModal}
+              note={selectedNote}
+              pubKey={pubKey}
+              privateKey={privateKey}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

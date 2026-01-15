@@ -1,22 +1,18 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { decryptNote } from "@/app/utils/asymmetricKeyManager";
+import { decryptNote } from "@/lib/asymmetricKeyManager";
 import { notifications } from "@mantine/notifications";
-import { SimpleGrid } from "@mantine/core";
+import { SimpleGrid, Card, Text } from "@mantine/core";
+
+import { DecryptedNoteType } from "./Dashboard";
 
 interface EncryptedNote {
   id: string;
   ciphertext: string;
   iv: string;
   ephemeralPublicKey: string;
-  createdAt: string;
-}
-
-interface DecryptedNote {
-  id: string;
-  title: string;
-  content: string;
-  createdAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 function truncate(text: string, max = 60) {
@@ -25,8 +21,8 @@ function truncate(text: string, max = 60) {
 }
 
 async function fetchAndDecryptNotes(
-  userPrivateKey: CryptoKey,
-): Promise<DecryptedNote[]> {
+  privateKey: CryptoKey,
+): Promise<DecryptedNoteType[]> {
   const res = await fetch("/api/note", {
     credentials: "include",
   });
@@ -36,27 +32,34 @@ async function fetchAndDecryptNotes(
   }
 
   const data = await res.json();
-  const decrypted: DecryptedNote[] = [];
+  const decrypted: DecryptedNoteType[] = [];
 
   for (const note of data.notes as EncryptedNote[]) {
-    const plaintext = await decryptNote(note, userPrivateKey);
+    const plaintext = await decryptNote(note, privateKey);
     const parsed = JSON.parse(plaintext);
     decrypted.push({
       id: note.id,
       title: parsed.title,
       content: parsed.content,
       createdAt: note.createdAt,
+      updatedAt: note.updatedAt,
     });
   }
 
   return decrypted;
 }
 
+interface PropsType {
+  privateKey: CryptoKey;
+  setSelectedNote: React.Dispatch<React.SetStateAction<DecryptedNoteType>>;
+  openEditNoteModal: () => void;
+}
+
 export default function NotesList({
-  userPrivateKey,
-}: {
-  userPrivateKey: CryptoKey;
-}) {
+  privateKey,
+  setSelectedNote,
+  openEditNoteModal,
+}: PropsType) {
   const {
     data: notes,
     isLoading,
@@ -64,7 +67,7 @@ export default function NotesList({
     error,
   } = useQuery({
     queryKey: ["notes"],
-    queryFn: () => fetchAndDecryptNotes(userPrivateKey),
+    queryFn: () => fetchAndDecryptNotes(privateKey),
     staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
     retry: 1,
   });
@@ -88,19 +91,28 @@ export default function NotesList({
 
   return (
     <SimpleGrid cols={3}>
-      {notes.map((note) => (
-        <div
+      {notes.map((note: DecryptedNoteType) => (
+        <Card
           key={note.id}
-          style={{
-            border: "1px solid #333",
-            borderRadius: 8,
-            padding: "1rem",
+          p="md"
+          style={{ cursor: "pointer" }}
+          onClick={() => {
+            setSelectedNote(note);
+            openEditNoteModal();
           }}
         >
-          <h3>{note.title}</h3>
-          <p style={{ whiteSpace: "pre-wrap" }}>{truncate(note.content, 40)}</p>
-          <small>{new Date(note.createdAt).toLocaleString()}</small>
-        </div>
+          <Text fw={600} size="lg" mb="xs">
+            {note.title}
+          </Text>
+          <Text size="sm" c="dimmed" style={{ whiteSpace: "pre-wrap" }} mb="xs">
+            {truncate(note.content, 40)}
+          </Text>
+          <Text size="xs" c="dimmed">
+            {new Date(
+              note.updatedAt ? note.updatedAt : note.createdAt,
+            ).toLocaleString()}
+          </Text>
+        </Card>
       ))}
     </SimpleGrid>
   );

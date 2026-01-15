@@ -2,7 +2,7 @@
 import { Modal, Button, TextInput, Textarea, Group, Box } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { encryptNote, importPublicKey } from "@/app/utils/asymmetricKeyManager";
+import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { notifications } from "@mantine/notifications";
 
 interface EncryptedNote {
@@ -179,7 +179,6 @@ export function AddNoteForm({
             </Button>
             <Button
               onClick={() => form.onSubmit(handleSubmit)()}
-              color="blue"
               loading={mutation.isPending}
             >
               Save

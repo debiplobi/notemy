@@ -10,8 +10,8 @@ import {
 import { theme } from "./theme";
 import "@mantine/notifications/styles.css";
 import { Notifications } from "@mantine/notifications";
-import Navbar from "@/app/components/NavigationBar";
-import { TanstackProvider } from "./Tanstackprovider";
+import Navbar from "@/components/NavigationBar";
+import { TanstackProvider } from "@/providers/Tanstackprovider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
