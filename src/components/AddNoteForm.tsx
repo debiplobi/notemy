@@ -1,5 +1,14 @@
 "use client";
-import { Modal, Button, TextInput, Textarea, Group, Box } from "@mantine/core";
+import {
+  Modal,
+  Button,
+  TextInput,
+  Textarea,
+  Group,
+  Box,
+  Stack,
+  Text,
+} from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
@@ -42,16 +51,11 @@ export function AddNoteForm({
       title: "",
       content: "",
     },
-    // validate: {
-    //   title: (value) => (!value.trim() ? "Title is required" : null),
-    //   content: (value) => (!value.trim() ? "Content is required" : null),
-    // },
   });
 
   const mutation = useMutation({
     mutationFn: addNote,
     onSuccess: () => {
-      // Invalidate and refetch notes
       queryClient.invalidateQueries({ queryKey: ["notes"] });
 
       notifications.show({
@@ -97,95 +101,126 @@ export function AddNoteForm({
   };
 
   return (
-    <>
-      <Modal
-        opened={opened}
-        onClose={handleCancel}
-        fullScreen
-        radius={0}
-        transitionProps={{ transition: "fade", duration: 200 }}
+    <Modal
+      opened={opened}
+      onClose={handleCancel}
+      fullScreen
+      radius={0}
+      transitionProps={{ transition: "fade", duration: 200 }}
+      styles={{
+        content: {
+          display: "flex",
+          flexDirection: "column",
+        },
+        body: {
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: 0,
+        },
+      }}
+    >
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+        }}
       >
-        <h2
+        {/* Header */}
+        <Box
+          p="xl"
           style={{
-            display: "flex",
-            justifyContent: "center",
-            fontWeight: 900,
+            borderBottom: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
+            backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
           }}
         >
-          ADD NEW NOTE
-        </h2>
+          <Text size="xl" fw={700} ta="center">
+            Add New Note
+          </Text>
+        </Box>
+
+        {/* Content */}
         <Box
           style={{
-            height: "80vh",
+            flex: 1,
+            overflow: "auto",
             display: "flex",
             flexDirection: "column",
           }}
         >
-          <Box
-            p="md"
-            style={{
-              flexShrink: 0,
-            }}
-          >
+          <Stack gap="md" p="xl" style={{ flex: 1 }}>
             <TextInput
-              placeholder="Title"
+              placeholder="Enter note title..."
               size="lg"
               styles={{
                 input: {
-                  fontSize: "1rem",
-                  fontWeight: 700,
+                  fontWeight: 600,
+                  fontSize: "1.25rem",
+                  border: "none",
+                  borderBottom: `2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
+                  borderRadius: 0,
+                  padding: "0.5rem 0",
+                  backgroundColor: "transparent",
+                  "&:focus": {
+                    borderBottomColor: "var(--mantine-color-Remoraid-6)",
+                  },
                 },
               }}
               {...form.getInputProps("title")}
             />
-          </Box>
-          <Box
-            p="md"
-            style={{
-              flex: 1,
-              overflow: "hidden",
-            }}
-          >
+
             <Textarea
-              placeholder="Content"
-              minRows={1}
+              placeholder="Start writing your note..."
               styles={{
                 root: {
-                  height: "100%",
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
                 },
                 wrapper: {
-                  height: "100%",
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
                 },
                 input: {
-                  height: "100%",
-                  fontSize: "0.9rem",
+                  flex: 1,
+                  fontSize: "1rem",
+                  lineHeight: 1.6,
+                  border: "none",
+                  padding: "1rem 0",
                   resize: "none",
+                  backgroundColor: "transparent",
+                  "&:focus": {
+                    outline: "none",
+                  },
                 },
               }}
               {...form.getInputProps("content")}
             />
-          </Box>
-          <Group
-            justify="flex-end"
-            p="md"
-            style={{
-              flexShrink: 0,
-              borderTop: "1px solid var(--mantine-color-gray-3)",
-              background: "var(--mantine-color-body)",
-            }}
-          >
-            <Button variant="subtle" onClick={handleCancel}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() => form.onSubmit(handleSubmit)()}
-              loading={mutation.isPending}
-            >
-              Save
-            </Button>
-          </Group>
+          </Stack>
         </Box>
-      </Modal>
-    </>
+
+        {/* Footer */}
+        <Group
+          justify="flex-end"
+          p="xl"
+          style={{
+            borderTop: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
+            backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
+          }}
+        >
+          <Button variant="subtle" onClick={handleCancel} color="gray">
+            Cancel
+          </Button>
+          <Button
+            onClick={() => form.onSubmit(handleSubmit)()}
+            loading={mutation.isPending}
+          >
+            Save Note
+          </Button>
+        </Group>
+      </Box>
+    </Modal>
   );
 }

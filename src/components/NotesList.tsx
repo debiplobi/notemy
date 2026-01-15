@@ -5,6 +5,7 @@ import { notifications } from "@mantine/notifications";
 import { SimpleGrid, Card, Text } from "@mantine/core";
 
 import { DecryptedNoteType } from "./Dashboard";
+import { useEffect } from "react";
 
 interface EncryptedNote {
   id: string;
@@ -81,9 +82,27 @@ export default function NotesList({
     });
   }
 
-  if (isLoading) {
-    return <p>Loading notes…</p>;
-  }
+  useEffect(() => {
+    if (isLoading) {
+      notifications.show({
+        id: "notes-loading",
+        title: "Loading…",
+        message: "Loading notes",
+        loading: true,
+        autoClose: false,
+        withCloseButton: false,
+      });
+    } else {
+      notifications.update({
+        id: "notes-loading",
+        title: "Loaded",
+        message: "Notes loaded successfully",
+        color: "green",
+        loading: false,
+        autoClose: 1000,
+      });
+    }
+  }, [isLoading]);
 
   if (!notes || notes.length === 0) {
     return <p>No notes yet.</p>;
@@ -105,13 +124,13 @@ export default function NotesList({
             {note.title}
           </Text>
           <Text size="sm" c="dimmed" style={{ whiteSpace: "pre-wrap" }} mb="xs">
-            {truncate(note.content, 40)}
+            {truncate(note.content, 100)}
           </Text>
-          <Text size="xs" c="dimmed">
-            {new Date(
-              note.updatedAt ? note.updatedAt : note.createdAt,
-            ).toLocaleString()}
-          </Text>
+          {/* <Text size="xs" c="dimmed"> */}
+          {/*   {new Date( */}
+          {/*     note.updatedAt ? note.updatedAt : note.createdAt, */}
+          {/*   ).toLocaleString()} */}
+          {/* </Text> */}
         </Card>
       ))}
     </SimpleGrid>
