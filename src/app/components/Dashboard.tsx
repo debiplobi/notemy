@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Container } from "@mantine/core";
+import { Button, Container } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconLoader3 } from "@tabler/icons-react";
 import secureLocalStorage from "react-secure-storage";
@@ -32,6 +32,11 @@ export default function Home() {
 
   const [keyModalOpened, { open: openKeyModal, close: closeKeyModal }] =
     useDisclosure(false);
+
+  const [
+    addNoteModalOpened,
+    { open: openAddNoteModal, close: closeaddNoteModal },
+  ] = useDisclosure(false);
 
   /* ------------------------------------------------------------------ */
   /* Load private key from secure storage                                */
@@ -125,7 +130,7 @@ export default function Home() {
     <div>
       <KeyGenerationModal
         opened={keyModalOpened}
-        onClose={closeKeyModal}
+        onCloseAction={closeKeyModal}
         isGeneratedUserKeys={!!pubKey}
       />
 
@@ -137,7 +142,16 @@ export default function Home() {
           background: "var(--mantine-color-body)",
         }}
       >
-        {pubKey && <AddNoteForm pubKey={pubKey} />}{" "}
+        {pubKey && (
+          <AddNoteForm
+            pubKey={pubKey}
+            opened={addNoteModalOpened}
+            onCloseAction={closeaddNoteModal}
+          />
+        )}
+        <Button variant="default" onClick={openAddNoteModal} size="md">
+          Add New Note
+        </Button>
       </div>
 
       {privateKey && <NotesList userPrivateKey={privateKey} />}

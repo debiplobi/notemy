@@ -1,13 +1,5 @@
 "use client";
-import { useDisclosure } from "@mantine/hooks";
-import {
-  Modal,
-  Button,
-  TextInput,
-  Textarea,
-  Group,
-  Box,
-} from "@mantine/core";
+import { Modal, Button, TextInput, Textarea, Group, Box } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote, importPublicKey } from "@/app/utils/asymmetricKeyManager";
@@ -19,9 +11,7 @@ interface EncryptedNote {
   ephemeralPublicKey: string;
 }
 
-async function addNote(
-  encryptedNote: EncryptedNote
-): Promise<void> {
+async function addNote(encryptedNote: EncryptedNote): Promise<void> {
   const response = await fetch("/api/note", {
     method: "POST",
     headers: {
@@ -36,8 +26,15 @@ async function addNote(
   }
 }
 
-export function AddNoteForm({ pubKey }: { pubKey: string }) {
-  const [opened, { open, close }] = useDisclosure(false);
+export function AddNoteForm({
+  pubKey,
+  opened,
+  onCloseAction,
+}: {
+  pubKey: string;
+  opened: boolean;
+  onCloseAction: () => void;
+}) {
   const queryClient = useQueryClient();
 
   const form = useForm({
@@ -45,10 +42,10 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
       title: "",
       content: "",
     },
-    validate: {
-      title: (value) => (!value.trim() ? "Title is required" : null),
-      content: (value) => (!value.trim() ? "Content is required" : null),
-    },
+    // validate: {
+    //   title: (value) => (!value.trim() ? "Title is required" : null),
+    //   content: (value) => (!value.trim() ? "Content is required" : null),
+    // },
   });
 
   const mutation = useMutation({
@@ -56,7 +53,7 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
     onSuccess: () => {
       // Invalidate and refetch notes
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-      
+
       notifications.show({
         title: "Success",
         message: "Note has been added",
@@ -64,7 +61,7 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
       });
 
       form.reset();
-      close();
+      onCloseAction();
     },
     onError: (error) => {
       notifications.show({
@@ -83,7 +80,7 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
         content: values.content,
       });
       const encryptedNote = await encryptNote(notePayload, publicKey);
-      
+
       mutation.mutate(encryptedNote);
     } catch (error) {
       notifications.show({
@@ -96,7 +93,7 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
 
   const handleCancel = () => {
     form.reset();
-    close();
+    onCloseAction();
   };
 
   return (
@@ -180,8 +177,8 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
             <Button variant="subtle" onClick={handleCancel}>
               Cancel
             </Button>
-            <Button 
-              onClick={() => form.onSubmit(handleSubmit)()} 
+            <Button
+              onClick={() => form.onSubmit(handleSubmit)()}
               color="blue"
               loading={mutation.isPending}
             >
@@ -190,9 +187,6 @@ export function AddNoteForm({ pubKey }: { pubKey: string }) {
           </Group>
         </Box>
       </Modal>
-      <Button variant="default" onClick={open} size="md">
-        Add New Note
-      </Button>
     </>
   );
 }

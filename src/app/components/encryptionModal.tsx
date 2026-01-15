@@ -21,11 +21,11 @@ import secureLocalStorage from "react-secure-storage";
 
 export function KeyGenerationModal({
   opened,
-  onClose,
+  onCloseAction,
   isGeneratedUserKeys = false,
 }: {
   opened: boolean;
-  onClose: () => void;
+  onCloseAction: () => void;
   isGeneratedUserKeys?: boolean;
 }) {
   const [keys, setKeys] = useState<ExportedKeys | null>(null);
@@ -47,7 +47,7 @@ export function KeyGenerationModal({
       }),
     });
     if (resp.status == 200) {
-      onClose();
+      onCloseAction();
       secureLocalStorage.setItem("privateKey", privKeyPem);
     }
   };
@@ -103,7 +103,7 @@ export function KeyGenerationModal({
       console.log(privateKeyInput);
       secureLocalStorage.setItem("privateKey", privateKeyInput);
       // If successful, close modal and pass the key back
-      onClose();
+      onCloseAction();
       // You might want to pass the privateKeyInput to parent component here
     } catch (error) {
       setImportError(
@@ -178,7 +178,7 @@ export function KeyGenerationModal({
             </Group>
 
             <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={onClose}>
+              <Button variant="default" onClick={onCloseAction}>
                 Cancel
               </Button>
               <Button
