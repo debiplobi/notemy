@@ -6,7 +6,7 @@ import { eq, and } from "drizzle-orm";
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   // 1️⃣ Authenticate
   const session = await auth.api.getSession({
@@ -37,7 +37,7 @@ export async function GET(
 
 export async function PUT(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   // 1️⃣ Authenticate user
   const session = await auth.api.getSession({
@@ -108,7 +108,7 @@ export async function PUT(
 
 export async function DELETE(
   request: Request,
-  { params }: { params: { id: string } },
+  { params }: { params: Promise<{ id: string }> },
 ) {
   const session = await auth.api.getSession({
     headers: request.headers,
