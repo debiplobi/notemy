@@ -117,7 +117,7 @@ export default function Home() {
   /* Loading                                                            */
   /* ------------------------------------------------------------------ */
 
-  if (isPending) {
+  if (isPending && pubKey) {
     return (
       <div
         style={{
@@ -139,7 +139,7 @@ export default function Home() {
   /* Not logged in                                                       */
   /* ------------------------------------------------------------------ */
 
-  if (!session?.user) {
+  if (!session?.user && !isPending && !pubKey) {
     return (
       <Container size="xs" py={80}>
         <SignIn />
@@ -152,50 +152,58 @@ export default function Home() {
   /* ------------------------------------------------------------------ */
 
   return (
-    <div>
-      <KeyGenerationModal
-        opened={keyModalOpened}
-        onCloseAction={closeKeyModal}
-        isGeneratedUserKeys={!!pubKey}
-      />
-
-      <div
-        style={{
-          marginBottom: "2em",
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        {pubKey && (
-          <AddNoteForm
-            pubKey={pubKey}
-            opened={addNoteModalOpened}
-            onCloseAction={closeaddNoteModal}
-          />
-        )}
-        <Button variant="default" onClick={openAddNoteModal} size="md">
-          Add New Note
-        </Button>
-      </div>
-
-      {privateKey && pubKey && (
-        <>
-          <NotesList
-            privateKey={privateKey}
-            setSelectedNote={setSelectedNote}
-            openEditNoteModal={openEditNoteModal}
-          />
-          {selectedNote?.id !== "" && (
-            <EditNoteForm
-              opened={editNoteModalOpened}
-              onCloseAction={closeEditNoteModal}
-              note={selectedNote}
-              pubKey={pubKey}
-              privateKey={privateKey}
-            />
-          )}
-        </>
+    <>
+      {pubKey && (
+        <KeyGenerationModal
+          opened={keyModalOpened}
+          onCloseAction={closeKeyModal}
+          isGeneratedUserKeys={!!pubKey}
+        />
       )}
-    </div>
+
+      <div>
+        <div
+          style={{
+            marginBottom: "2em",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {pubKey && (
+            <div>
+              <AddNoteForm
+                pubKey={pubKey}
+                opened={addNoteModalOpened}
+                onCloseAction={closeaddNoteModal}
+              />
+
+              <Button variant="default" onClick={openAddNoteModal} size="md">
+                Add New Note
+              </Button>
+            </div>
+          )}
+        </div>
+
+        {privateKey && pubKey && (
+          <>
+            <NotesList
+              privateKey={privateKey}
+              setSelectedNote={setSelectedNote}
+              openEditNoteModal={openEditNoteModal}
+              openKeyModal={openKeyModal}
+            />
+            {selectedNote?.id !== "" && (
+              <EditNoteForm
+                opened={editNoteModalOpened}
+                onCloseAction={closeEditNoteModal}
+                note={selectedNote}
+                pubKey={pubKey}
+                privateKey={privateKey}
+              />
+            )}
+          </>
+        )}
+      </div>
+    </>
   );
 }

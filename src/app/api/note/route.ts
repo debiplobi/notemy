@@ -86,6 +86,7 @@ export async function GET(request: Request) {
       iv: note.iv,
       ephemeralPublicKey: note.ephemeralPublicKey,
       createdAt: note.createdAt,
+      updatedAt: note.updatedAt,
     })
     .from(note)
     .where(eq(note.userId, session.user.id))

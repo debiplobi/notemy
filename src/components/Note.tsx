@@ -25,6 +25,15 @@ interface EncryptedNotePayload {
   ephemeralPublicKey: string;
 }
 
+const formatDate = (date: string) =>
+  new Date(date).toLocaleString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
 async function updateNote(noteId: string, encryptedNote: EncryptedNotePayload) {
   const res = await fetch(`/api/note/${noteId}`, {
     method: "PUT",
@@ -150,6 +159,10 @@ export function EditNoteForm({
     deleteMutation.mutate();
   };
 
+  const displayedDate = updateMutation.isSuccess
+    ? new Date().toLocaleString()
+    : new Date(note.updatedAt ?? note.createdAt).toLocaleString();
+
   return (
     <>
       <Modal
@@ -272,12 +285,10 @@ export function EditNoteForm({
               backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
             }}
           >
-            <Text size="sm" c="dimmed">
-              {note?.updatedAt
-                ? `Last edited: ${new Date(note.updatedAt).toLocaleDateString()}`
-                : ""}
+            <Text size="xs" c="dimmed">
+              {note.updatedAt ? "Last edited: " : "Created: "}
+              {displayedDate}
             </Text>
-
             <Group gap="sm">
               <Button variant="subtle" onClick={handleCancel} color="gray">
                 Cancel

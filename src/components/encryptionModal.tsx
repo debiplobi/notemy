@@ -18,15 +18,16 @@ import {
   type ExportedKeys,
 } from "@/lib/asymmetricKeyManager";
 import secureLocalStorage from "react-secure-storage";
+import { notifications } from "@mantine/notifications";
 
 export function KeyGenerationModal({
   opened,
   onCloseAction,
-  isGeneratedUserKeys = false,
+  isGeneratedUserKeys,
 }: {
   opened: boolean;
   onCloseAction: () => void;
-  isGeneratedUserKeys?: boolean;
+  isGeneratedUserKeys: boolean;
 }) {
   const [keys, setKeys] = useState<ExportedKeys | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
@@ -94,20 +95,26 @@ export function KeyGenerationModal({
     }
   };
 
+  //TODO: fix/handle when user gives someone else private key  as their
   const handleImportKey = async () => {
     try {
       setImportError("");
-      // Validate the key by attempting to import it
+
+      // Validate the key
       await importPrivateKey(privateKeyInput);
 
+      // Store key
       secureLocalStorage.setItem("privateKey", privateKeyInput);
-      // If successful, close modal and pass the key back
+
+      // Close modal
       onCloseAction();
-      // You might want to pass the privateKeyInput to parent component here
     } catch (error) {
       setImportError(
         "Invalid private key format. Please check your key and try again.",
       );
+    } finally {
+      // 🔥 FULL window reload (hard refresh)
+      window.location.reload();
     }
   };
 

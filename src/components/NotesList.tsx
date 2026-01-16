@@ -5,7 +5,6 @@ import { notifications } from "@mantine/notifications";
 import { SimpleGrid, Card, Text } from "@mantine/core";
 
 import { DecryptedNoteType } from "./Dashboard";
-import { useEffect } from "react";
 
 interface EncryptedNote {
   id: string;
@@ -54,12 +53,14 @@ interface PropsType {
   privateKey: CryptoKey;
   setSelectedNote: React.Dispatch<React.SetStateAction<DecryptedNoteType>>;
   openEditNoteModal: () => void;
+  openKeyModal: () => void;
 }
 
 export default function NotesList({
   privateKey,
   setSelectedNote,
   openEditNoteModal,
+  openKeyModal,
 }: PropsType) {
   const {
     data: notes,
@@ -75,42 +76,34 @@ export default function NotesList({
 
   // Show error notification when query fails
   if (isError) {
-    notifications.show({
-      title: "Error",
-      message: error instanceof Error ? error.message : "Failed to load notes",
-      color: "red",
-    });
-  }
-
-  useEffect(() => {
-    if (isLoading) {
+    if (error?.name === "OperationError") {
       notifications.show({
-        id: "notes-loading",
-        title: "Loading…",
-        message: "Loading notes",
-        loading: true,
-        autoClose: false,
-        withCloseButton: false,
+        title: "Invalid Private Key",
+        message: "Please provide correct private key",
+        color: "red",
       });
+      openKeyModal();
     } else {
-      notifications.update({
-        id: "notes-loading",
-        title: "Loaded",
-        message: "Notes loaded successfully",
-        color: "green",
-        loading: false,
-        autoClose: 1000,
+      notifications.show({
+        title: "Error",
+        message:
+          error instanceof Error ? error.message : "Failed to load notes",
+        color: "red",
       });
     }
-  }, [isLoading]);
+  }
 
-  if (!notes || notes.length === 0) {
+  if (!isLoading && (!notes || notes.length === 0)) {
     return <p>No notes yet.</p>;
+  }
+
+  if (isLoading && !notes) {
+    return <p>Decrypting Notes...</p>;
   }
 
   return (
     <SimpleGrid cols={3}>
-      {notes.map((note: DecryptedNoteType) => (
+      {notes?.map((note: DecryptedNoteType) => (
         <Card
           key={note.id}
           p="md"

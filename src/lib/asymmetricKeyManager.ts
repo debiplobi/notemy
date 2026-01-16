@@ -22,8 +22,8 @@ export interface ExportedKeys {
 }
 
 export interface EncryptedNote {
-  ciphertext: string;        // base64
-  iv: string;                // base64
+  ciphertext: string; // base64
+  iv: string; // base64
   ephemeralPublicKey: string; // base64 (raw)
 }
 
@@ -32,11 +32,9 @@ export interface EncryptedNote {
 /* ------------------------------------------------------------------ */
 
 export async function generateUserKeyPair(): Promise<KeyPair> {
-  return crypto.subtle.generateKey(
-    { name: "X25519" },
-    true,
-    ["deriveBits"],
-  ) as Promise<KeyPair>;
+  return crypto.subtle.generateKey({ name: "X25519" }, true, [
+    "deriveBits",
+  ]) as Promise<KeyPair>;
 }
 
 /* ------------------------------------------------------------------ */
@@ -64,9 +62,7 @@ export function pemToArrayBuffer(pem: string): ArrayBuffer {
 /* Export / Import                                                    */
 /* ------------------------------------------------------------------ */
 
-export async function exportKeyPair(
-  keyPair: KeyPair,
-): Promise<ExportedKeys> {
+export async function exportKeyPair(keyPair: KeyPair): Promise<ExportedKeys> {
   const priv = await crypto.subtle.exportKey("pkcs8", keyPair.privateKey);
   const pub = await crypto.subtle.exportKey("spki", keyPair.publicKey);
 
@@ -105,11 +101,9 @@ export async function encryptNote(
   userPublicKey: CryptoKey,
 ): Promise<EncryptedNote> {
   // 1. Generate ephemeral key
-  const eph = (await crypto.subtle.generateKey(
-    { name: "X25519" },
-    false,
-    ["deriveBits"],
-  )) as KeyPair;
+  const eph = (await crypto.subtle.generateKey({ name: "X25519" }, false, [
+    "deriveBits",
+  ])) as KeyPair;
 
   // 2. Derive shared secret
   const sharedSecret = await crypto.subtle.deriveBits(

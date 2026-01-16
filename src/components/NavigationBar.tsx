@@ -9,10 +9,18 @@ import secureLocalStorage from "react-secure-storage";
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const {
     data: session,
-    isPending, //loading state
-    error, //error object
+    // isPending, //loading state
+    // error, //error object
     refetch, //refetch the session
   } = authClient.useSession();
+
+  const logoutFn = async () => {
+    await authClient.signOut(); // invalidate session server-side
+    secureLocalStorage.removeItem("privateKey");
+
+    await refetch();
+    window.location.reload();
+  };
 
   return (
     <AppShell header={{ height: 60 }} padding="md">
@@ -63,10 +71,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                   <Menu.Item
                     color="red"
                     leftSection={<IconLogout size={16} />}
-                    onClick={() => {
-                      authClient.signOut();
-                      secureLocalStorage.removeItem("privateKey");
-                    }}
+                    onClick={logoutFn}
                   >
                     Sign out
                   </Menu.Item>
