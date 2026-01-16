@@ -63,7 +63,6 @@ export default function Home() {
   const [selectedNote, setSelectedNote] =
     useState<DecryptedNoteType>(EMPTY_NOTE);
 
-
   /* ------------------------------------------------------------------ */
   /* Load private key from secure storage                                */
   /* ------------------------------------------------------------------ */
