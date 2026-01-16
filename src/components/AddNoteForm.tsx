@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Modal,
   Button,
@@ -21,18 +22,14 @@ interface EncryptedNote {
 }
 
 async function addNote(encryptedNote: EncryptedNote): Promise<void> {
-  const response = await fetch("/api/note", {
+  const res = await fetch("/api/note", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify(encryptedNote),
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to add note");
-  }
+  if (!res.ok) throw new Error("Failed to add note");
 }
 
 export function AddNoteForm({
@@ -57,170 +54,150 @@ export function AddNoteForm({
     mutationFn: addNote,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["notes"] });
-
       notifications.show({
-        title: "Success",
-        message: "Note has been added",
+        title: "Saved",
+        message: "Your note has been added",
         color: "green",
       });
-
       form.reset();
       onCloseAction();
     },
     onError: (error) => {
       notifications.show({
         title: "Error",
-        message: error instanceof Error ? error.message : "Failed to add note",
+        message:
+          error instanceof Error ? error.message : "Failed to add note",
         color: "red",
       });
     },
   });
 
-  const handleSubmit = async (values: { title: string; content: string }) => {
+  const handleSubmit = async (values: {
+    title: string;
+    content: string;
+  }) => {
     try {
       const publicKey = await importPublicKey(pubKey);
-      const notePayload = JSON.stringify({
-        title: values.title,
-        content: values.content,
-      });
-      const encryptedNote = await encryptNote(notePayload, publicKey);
-
-      mutation.mutate(encryptedNote);
-    } catch (error) {
+      const payload = JSON.stringify(values);
+      const encrypted = await encryptNote(payload, publicKey);
+      mutation.mutate(encrypted);
+    } catch {
       notifications.show({
-        title: "Error",
-        message: "Failed to encrypt note",
+        title: "Encryption failed",
+        message: "Unable to encrypt your note",
         color: "red",
       });
     }
   };
 
-  const handleCancel = () => {
-    form.reset();
-    onCloseAction();
-  };
-
   return (
     <Modal
       opened={opened}
-      onClose={handleCancel}
+      onClose={onCloseAction}
       fullScreen
       radius={0}
+      withCloseButton={false}
       transitionProps={{ transition: "fade", duration: 200 }}
       styles={{
-        content: {
-          display: "flex",
-          flexDirection: "column",
-        },
         body: {
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
           padding: 0,
-        },
-      }}
-    >
-      <Box
-        style={{
           display: "flex",
           flexDirection: "column",
           height: "100%",
+        },
+      }}
+    >
+      {/* Header */}
+      <Box
+        px="md"
+        py="sm"
+        style={{
+          position: "sticky",
+          top: 0,
+          zIndex: 10,
+          borderBottom:
+            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
         }}
       >
-        {/* Header */}
-        <Box
-          p="xl"
-          style={{
-            borderBottom: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-            backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
-          }}
-        >
-          <Text size="xl" fw={700} ta="center">
-            Add New Note
-          </Text>
-        </Box>
-
-        {/* Content */}
-        <Box
-          style={{
-            flex: 1,
-            overflow: "auto",
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <Stack gap="md" p="xl" style={{ flex: 1 }}>
-            <TextInput
-              placeholder="Enter note title..."
-              size="lg"
-              styles={{
-                input: {
-                  fontWeight: 600,
-                  fontSize: "1.25rem",
-                  border: "none",
-                  borderBottom: `2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-                  borderRadius: 0,
-                  padding: "0.5rem 0",
-                  backgroundColor: "transparent",
-                  "&:focus": {
-                    borderBottomColor: "var(--mantine-color-Remoraid-6)",
-                  },
-                },
-              }}
-              {...form.getInputProps("title")}
-            />
-
-            <Textarea
-              placeholder="Start writing your note..."
-              styles={{
-                root: {
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                },
-                wrapper: {
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                },
-                input: {
-                  flex: 1,
-                  fontSize: "1rem",
-                  lineHeight: 1.6,
-                  border: "none",
-                  padding: "1rem 0",
-                  resize: "none",
-                  backgroundColor: "transparent",
-                  "&:focus": {
-                    outline: "none",
-                  },
-                },
-              }}
-              {...form.getInputProps("content")}
-            />
-          </Stack>
-        </Box>
-
-        {/* Footer */}
-        <Group
-          justify="flex-end"
-          p="xl"
-          style={{
-            borderTop: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-            backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
-          }}
-        >
-          <Button variant="subtle" onClick={handleCancel} color="gray">
-            Cancel
-          </Button>
-          <Button
-            onClick={() => form.onSubmit(handleSubmit)()}
-            loading={mutation.isPending}
-          >
-            Save Note
-          </Button>
-        </Group>
+        <Text size="lg" fw={700} ta="center">
+          Add New Note
+        </Text>
       </Box>
+
+      {/* Form */}
+      <Box
+        component="form"
+        onSubmit={form.onSubmit(handleSubmit)}
+        style={{
+          flex: 1,
+          overflow: "auto",
+        }}
+      >
+        <Stack px="md" py="lg" gap="md" style={{ minHeight: "100%" }}>
+          <TextInput
+            placeholder="Title"
+            size="lg"
+            {...form.getInputProps("title")}
+            styles={{
+              input: {
+                fontSize: "1.25rem",
+                fontWeight: 600,
+                border: "none",
+                borderBottom:
+                  "2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+                borderRadius: 0,
+                backgroundColor: "transparent",
+              },
+            }}
+          />
+
+          <Textarea
+            placeholder="Start writing..."
+            autosize
+            minRows={10}
+            {...form.getInputProps("content")}
+            styles={{
+              input: {
+                fontSize: "1rem",
+                lineHeight: 1.6,
+                border: "none",
+                backgroundColor: "transparent",
+                resize: "none",
+              },
+            }}
+          />
+        </Stack>
+      </Box>
+
+      {/* Footer */}
+      <Group
+        px="md"
+        py="sm"
+        justify="space-between"
+        style={{
+          position: "sticky",
+          bottom: 0,
+          borderTop:
+            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
+        }}
+      >
+        <Button
+          variant="subtle"
+          color="gray"
+          onClick={onCloseAction}
+          disabled={mutation.isPending}
+        >
+          Cancel
+        </Button>
+
+        <Button type="submit" loading={mutation.isPending}>
+          Save
+        </Button>
+      </Group>
     </Modal>
   );
 }
