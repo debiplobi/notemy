@@ -102,7 +102,7 @@ export default function NotesList({
   }
 
   return (
-    <SimpleGrid cols={3}>
+    <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
       {notes?.map((note: DecryptedNoteType) => (
         <Card
           key={note.id}
