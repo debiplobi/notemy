@@ -94,11 +94,19 @@ export default function NotesList({
   }
 
   if (!isLoading && (!notes || notes.length === 0)) {
-    return <p>No notes yet.</p>;
+    return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Text>No notes yet.</Text>
+      </div>
+    );
   }
 
   if (isLoading && !notes) {
-    return <p>Decrypting Notes...</p>;
+    return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Text>Decrypting Notes...</Text>
+      </div>
+    );
   }
 
   return (
@@ -113,17 +121,13 @@ export default function NotesList({
             openEditNoteModal();
           }}
         >
-          <Text fw={600} size="lg" mb="xs">
-            {note.title}
-          </Text>
-          <Text size="sm" c="dimmed" style={{ whiteSpace: "pre-wrap" }} mb="xs">
+          <Text fw={600}>{note.title}</Text>
+          <Text
+            c="dimmed"
+            style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+          >
             {truncate(note.content, 100)}
           </Text>
-          {/* <Text size="xs" c="dimmed"> */}
-          {/*   {new Date( */}
-          {/*     note.updatedAt ? note.updatedAt : note.createdAt, */}
-          {/*   ).toLocaleString()} */}
-          {/* </Text> */}
         </Card>
       ))}
     </SimpleGrid>

@@ -98,15 +98,9 @@ export const note = pgTable(
   "note",
   {
     id: text("id").primaryKey(),
-
     userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-
-    /**
-     * Encrypted note payload
-     * (title + content JSON)
-     */
     ciphertext: text("ciphertext").notNull(), // base64
     iv: text("iv").notNull(), // base64
     ephemeralPublicKey: text("ephemeral_public_key").notNull(), // base64 (wrapped AES key)

@@ -15,7 +15,6 @@ import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
 import classes from "@/styles/NoteForms.module.css";
 import type { DecryptedNoteType } from "./Dashboard";
@@ -69,26 +68,19 @@ export function EditNoteForm({
 
   const form = useForm({
     initialValues: {
+      id: "",
       title: "",
       content: "",
     },
   });
 
-  useEffect(() => {
-    if (!opened || !note) return;
-    try {
-      form.setValues({
-        title: note.title,
-        content: note.content,
-      });
-    } catch (_e) {
-      notifications.show({
-        title: "Error",
-        message: "Failed to show note",
-        color: "red",
-      });
-    }
-  }, [opened, note, form]);
+  if (opened && note && form.values.id !== note.id) {
+    form.setValues({
+      title: note.title,
+      content: note.content,
+      id: note.id,
+    });
+  }
 
   const updateMutation = useMutation({
     mutationFn: async (values: { title: string; content: string }) => {
@@ -141,7 +133,6 @@ export function EditNoteForm({
   });
 
   const handleCancel = () => {
-    form.reset();
     onCloseAction();
   };
 
@@ -156,6 +147,7 @@ export function EditNoteForm({
   return (
     <>
       <Modal
+        key={note.id}
         opened={opened}
         onClose={handleCancel}
         fullScreen

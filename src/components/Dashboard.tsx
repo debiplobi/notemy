@@ -115,7 +115,7 @@ export default function Home() {
   /* Loading                                                            */
   /* ------------------------------------------------------------------ */
 
-  if (isPending && pubKey) {
+  if (isPending) {
     return (
       <div className="flex-center-screen">
         <IconLoader3 size={32} className="animate-spin-custom" />
