@@ -1,9 +1,9 @@
+import { randomUUID } from "node:crypto";
+import { desc, eq } from "drizzle-orm";
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { db } from "@/db";
 import { note } from "@/db/schema";
-import { randomUUID } from "crypto";
-import { desc, eq } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 
 export async function POST(request: Request) {
   // 1️⃣ Authenticate user

@@ -1,79 +1,79 @@
 .modalContent {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .modalBody {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
 }
 
 .container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .header {
-    padding: var(--mantine-spacing-xl);
-    border-bottom: 1px solid var(--border-color);
-    /* background-color: var(--bg-background); */
+  padding: var(--mantine-spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  /* background-color: var(--bg-background); */
 }
 
 .contentScroll {
-    flex: 1;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .formStack {
-    flex: 1;
+  flex: 1;
 }
 
 .titleInput {
-    font-weight: 600;
-    font-size: 1.25rem;
-    border: none;
-    border-bottom: 2px solid var(--border-color);
-    border-radius: 0;
-    padding: 0.5rem 0;
-    background-color: transparent;
+  font-weight: 600;
+  font-size: 1.25rem;
+  border: none;
+  border-bottom: 2px solid var(--border-color);
+  border-radius: 0;
+  padding: 0.5rem 0;
+  background-color: transparent;
 }
 
 .titleInput:focus {
-    border-bottom-color: var(--focus-color);
+  border-bottom-color: var(--focus-color);
 }
 
 .contentInputRoot {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .contentInputWrapper {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .contentInput {
-    flex: 1;
-    font-size: 1rem;
-    line-height: 1.6;
-    border: none;
-    padding: 1rem 0;
-    resize: none;
-    background-color: transparent;
+  flex: 1;
+  font-size: 1rem;
+  line-height: 1.6;
+  border: none;
+  padding: 1rem 0;
+  resize: none;
+  background-color: transparent;
 }
 
 .contentInput:focus {
-    outline: none;
+  outline: none;
 }
 
 .footer {
-    border-top: 1px solid var(--border-color);
-    /* background-color: var(--bg-surface); */
+  border-top: 1px solid var(--border-color);
+  /* background-color: var(--bg-surface); */
 }

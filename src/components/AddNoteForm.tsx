@@ -1,18 +1,18 @@
 "use client";
 import {
-  Modal,
-  Button,
-  TextInput,
-  Textarea,
-  Group,
   Box,
+  Button,
+  Group,
+  Modal,
   Stack,
   Text,
+  Textarea,
+  TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
-import { notifications } from "@mantine/notifications";
 import classes from "@/styles/NoteForms.module.css";
 
 interface EncryptedNote {
@@ -87,7 +87,7 @@ export function AddNoteForm({
       const encryptedNote = await encryptNote(notePayload, publicKey);
 
       mutation.mutate(encryptedNote);
-    } catch (error) {
+    } catch (_error) {
       notifications.show({
         title: "Error",
         message: "Failed to encrypt note",

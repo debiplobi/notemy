@@ -1,10 +1,10 @@
 "use client";
-import { AppShell, Group, Text, Menu, Avatar } from "@mantine/core";
+import { AppShell, Avatar, Group, Menu, Text } from "@mantine/core";
+import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import Link from "next/link";
-import { ThemeToggle } from "./ThemeToggle";
-import { authClient } from "../lib/auth-client";
-import { IconLogout, IconUser, IconSettings } from "@tabler/icons-react";
 import secureLocalStorage from "react-secure-storage";
+import { authClient } from "../lib/auth-client";
+import { ThemeToggle } from "./ThemeToggle";
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const {
@@ -77,9 +77,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                   </Menu.Item>
                 </Menu.Dropdown>
               </Menu>
-            ) : (
-              <></>
-            )}
+            ) : null}
           </Group>
         </Group>
       </AppShell.Header>

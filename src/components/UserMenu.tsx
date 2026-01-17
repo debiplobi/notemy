@@ -1,6 +1,6 @@
 "use client";
 import { Avatar, Menu, Text } from "@mantine/core";
-import { IconLogout, IconUser, IconSettings } from "@tabler/icons-react";
+import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 
 interface UserMenuProps {
   user: {

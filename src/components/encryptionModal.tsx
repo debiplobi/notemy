@@ -1,24 +1,23 @@
 "use client";
-import { useState } from "react";
 import {
-  Modal,
+  Alert,
   Button,
-  Textarea,
+  CopyButton,
+  FileButton,
+  Group,
+  Modal,
   Stack,
   Text,
-  Group,
-  CopyButton,
-  Alert,
-  FileButton,
+  Textarea,
 } from "@mantine/core";
-import {
-  generateUserKeyPair,
-  exportKeyPair,
-  importPrivateKey,
-  type ExportedKeys,
-} from "@/lib/asymmetricKeyManager";
+import { useState } from "react";
 import secureLocalStorage from "react-secure-storage";
-import { notifications } from "@mantine/notifications";
+import {
+  type ExportedKeys,
+  exportKeyPair,
+  generateUserKeyPair,
+  importPrivateKey,
+} from "@/lib/asymmetricKeyManager";
 
 export function KeyGenerationModal({
   opened,
@@ -47,7 +46,7 @@ export function KeyGenerationModal({
         encryptionKey: pubKeyPem,
       }),
     });
-    if (resp.status == 200) {
+    if (resp.status === 200) {
       onCloseAction();
       secureLocalStorage.setItem("privateKey", privKeyPem);
     }
@@ -90,7 +89,7 @@ export function KeyGenerationModal({
       const text = await file.text();
       setPrivateKeyInput(text);
       setImportError("");
-    } catch (error) {
+    } catch (_error) {
       setImportError("Failed to read file. Please try again.");
     }
   };
@@ -108,7 +107,7 @@ export function KeyGenerationModal({
 
       // Close modal
       onCloseAction();
-    } catch (error) {
+    } catch (_error) {
       setImportError(
         "Invalid private key format. Please check your key and try again.",
       );
@@ -195,83 +194,79 @@ export function KeyGenerationModal({
               </Button>
             </Group>
           </>
-        ) : (
-          // GENERATION MODE - New user
+        ) : // GENERATION MODE - New user
+        !keys ? (
           <>
-            {!keys ? (
-              <>
-                <Text size="sm" c="dimmed">
-                  This will generate your encryption keys. The private key will
-                  be shown only once. Make sure to save it securely.
-                </Text>
-                <Button onClick={generateKeys} loading={isGenerating} fullWidth>
-                  Generate Keys
-                </Button>
-              </>
-            ) : (
-              <>
-                <Alert color="red" title="⚠️ Important Warning">
-                  Save your private key securely. You will NOT see it again.
-                  Store it in a safe place like a password manager or download
-                  it to a secure location.
-                </Alert>
+            <Text size="sm" c="dimmed">
+              This will generate your encryption keys. The private key will be
+              shown only once. Make sure to save it securely.
+            </Text>
+            <Button onClick={generateKeys} loading={isGenerating} fullWidth>
+              Generate Keys
+            </Button>
+          </>
+        ) : (
+          <>
+            <Alert color="red" title="⚠️ Important Warning">
+              Save your private key securely. You will NOT see it again. Store
+              it in a safe place like a password manager or download it to a
+              secure location.
+            </Alert>
 
-                {/* PRIVATE KEY ONLY */}
-                <div>
-                  <Text size="sm" fw={600} mb="xs" c="red">
-                    Private Key (keep secret!)
-                  </Text>
-                  <Textarea
-                    value={keys.privateKeyPem}
-                    readOnly
-                    autosize
-                    minRows={8}
-                    maxRows={12}
-                    styles={{
-                      input: {
-                        fontFamily: "monospace",
-                        fontSize: "0.75rem",
-                      },
-                    }}
-                  />
-                  <Group mt="xs" gap="xs">
-                    <CopyButton value={keys.privateKeyPem}>
-                      {({ copied, copy }) => (
-                        <Button
-                          color="red"
-                          variant="light"
-                          onClick={copy}
-                          size="xs"
-                        >
-                          {copied ? "Copied!" : "Copy Private Key"}
-                        </Button>
-                      )}
-                    </CopyButton>
+            {/* PRIVATE KEY ONLY */}
+            <div>
+              <Text size="sm" fw={600} mb="xs" c="red">
+                Private Key (keep secret!)
+              </Text>
+              <Textarea
+                value={keys.privateKeyPem}
+                readOnly
+                autosize
+                minRows={8}
+                maxRows={12}
+                styles={{
+                  input: {
+                    fontFamily: "monospace",
+                    fontSize: "0.75rem",
+                  },
+                }}
+              />
+              <Group mt="xs" gap="xs">
+                <CopyButton value={keys.privateKeyPem}>
+                  {({ copied, copy }) => (
                     <Button
                       color="red"
-                      variant="subtle"
-                      onClick={downloadPrivateKey}
+                      variant="light"
+                      onClick={copy}
                       size="xs"
                     >
-                      Download as .pem
+                      {copied ? "Copied!" : "Copy Private Key"}
                     </Button>
-                  </Group>
-                </div>
-                <Group justify="flex-end" mt="md">
-                  <Button
-                    onClick={() =>
-                      handleUploadPubKeyToServer(
-                        keys.publicKeyPem,
-                        keys.privateKeyPem,
-                      )
-                    }
-                    variant="filled"
-                  >
-                    I've Saved My Key
-                  </Button>
-                </Group>
-              </>
-            )}
+                  )}
+                </CopyButton>
+                <Button
+                  color="red"
+                  variant="subtle"
+                  onClick={downloadPrivateKey}
+                  size="xs"
+                >
+                  Download as .pem
+                </Button>
+              </Group>
+            </div>
+            <Group justify="flex-end" mt="md">
+              <Button
+                onClick={() =>
+                  handleUploadPubKeyToServer(
+                    keys.publicKeyPem,
+                    keys.privateKeyPem,
+                  )
+                }
+                variant="filled"
+              >
+                I've Saved My Key
+              </Button>
+            </Group>
           </>
         )}
       </Stack>

@@ -1,18 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { Button, Container } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconLoader3 } from "@tabler/icons-react";
+import { useEffect, useState } from "react";
 import secureLocalStorage from "react-secure-storage";
-
-import SignIn from "@/components/sign-in";
-import { KeyGenerationModal } from "@/components/encryptionModal";
 import { AddNoteForm } from "@/components/AddNoteForm";
+import { KeyGenerationModal } from "@/components/encryptionModal";
 import NotesList from "@/components/NotesList";
-
-import { authClient } from "@/lib/auth-client";
+import SignIn from "@/components/sign-in";
 import { importPrivateKey } from "@/lib/asymmetricKeyManager";
+import { authClient } from "@/lib/auth-client";
 import { EditNoteForm } from "./Note";
 
 type EncryptionKeyResp = { encryptionKey: string };
@@ -111,7 +109,7 @@ export default function Home() {
     return () => {
       cancelled = true;
     };
-  }, [session?.user?.id]);
+  }, [session?.user?.id, session?.user]);
 
   /* ------------------------------------------------------------------ */
   /* Loading                                                            */
@@ -182,7 +180,6 @@ export default function Home() {
                 onCloseAction={closeEditNoteModal}
                 note={selectedNote}
                 pubKey={pubKey}
-                privateKey={privateKey}
               />
             )}
           </>

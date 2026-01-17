@@ -1,8 +1,8 @@
-import { NextResponse, NextRequest } from "next/server";
-import { auth } from "@/lib/auth";
+import { and, eq } from "drizzle-orm";
+import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { note } from "@/db/schema";
-import { eq, and } from "drizzle-orm";
+import { auth } from "@/lib/auth";
 
 export async function GET(
   request: Request,

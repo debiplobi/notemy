@@ -1,12 +1,17 @@
 "use client";
 
-import { ActionIcon } from "@mantine/core";
-import { useMantineColorScheme, useComputedColorScheme } from "@mantine/core";
+import {
+  ActionIcon,
+  useComputedColorScheme,
+  useMantineColorScheme,
+} from "@mantine/core";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 
 const LightThemeIcon = () => (
   <motion.svg
+    aria-label="Light theme icon"
+    role="img"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.8 }}
@@ -31,6 +36,8 @@ const LightThemeIcon = () => (
 
 const DarkThemeIcon = () => (
   <motion.svg
+    aria-label="Dark theme icon"
+    role="img"
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.8 }}

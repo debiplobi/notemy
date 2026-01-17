@@ -97,7 +97,8 @@ export const theme = createTheme({
 
   // Better dimmed text colors
   other: {
-    dimmedColor: "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
+    dimmedColor:
+      "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
   },
 
   components: {
@@ -106,9 +107,12 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         input: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          color: "light-dark(var(--mantine-color-black), var(--mantine-color-dark-0))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          color:
+            "light-dark(var(--mantine-color-black), var(--mantine-color-dark-0))",
           "&:focus": {
             borderColor: "var(--mantine-color-Remoraid-6)",
           },
@@ -137,7 +141,8 @@ export const theme = createTheme({
       defaultProps: { size: "sm" },
       styles: {
         input: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&:checked": {
             backgroundColor: "var(--mantine-color-Remoraid-6)",
             borderColor: "var(--mantine-color-Remoraid-6)",
@@ -149,7 +154,8 @@ export const theme = createTheme({
       defaultProps: { size: "sm" },
       styles: {
         radio: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&:checked": {
             borderColor: "var(--mantine-color-Remoraid-6)",
           },
@@ -160,7 +166,8 @@ export const theme = createTheme({
       defaultProps: { size: "sm" },
       styles: {
         track: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -170,7 +177,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -178,7 +186,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -191,8 +200,10 @@ export const theme = createTheme({
       defaultProps: { withBorder: true, radius: "xs" },
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
         },
       },
     },
@@ -200,7 +211,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         root: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
         },
       },
     },
@@ -210,7 +222,8 @@ export const theme = createTheme({
     Box: {
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -220,11 +233,14 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         content: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
         },
         header: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-          borderBottom: "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
+          borderBottom:
+            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -232,11 +248,14 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         content: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
         },
         header: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-          borderBottom: "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
+          borderBottom:
+            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -244,8 +263,10 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         dropdown: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -253,8 +274,10 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         tooltip: {
-          backgroundColor: "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-4))",
-          color: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-0))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-4))",
+          color:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-0))",
         },
       },
     },
@@ -262,12 +285,15 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         dropdown: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
         item: {
           "&[data-hovered]": {
-            backgroundColor: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
+            backgroundColor:
+              "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
           },
         },
       },
@@ -278,7 +304,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         tab: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&[data-active]": {
             borderColor: "var(--mantine-color-Remoraid-6)",
             color: "var(--mantine-color-Remoraid-6)",
@@ -289,9 +316,11 @@ export const theme = createTheme({
     NavLink: {
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&[data-active]": {
-            backgroundColor: "light-dark(var(--mantine-color-Remoraid-0), var(--mantine-color-dark-5))",
+            backgroundColor:
+              "light-dark(var(--mantine-color-Remoraid-0), var(--mantine-color-dark-5))",
             color: "var(--mantine-color-Remoraid-6)",
           },
         },
@@ -300,7 +329,8 @@ export const theme = createTheme({
     Breadcrumbs: {
       styles: {
         separator: {
-          color: "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
+          color:
+            "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
         },
       },
     },
@@ -308,7 +338,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         control: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&[data-active]": {
             backgroundColor: "var(--mantine-color-Remoraid-6)",
             borderColor: "var(--mantine-color-Remoraid-6)",
@@ -322,7 +353,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -330,8 +362,10 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         root: {
-          backgroundColor: "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -339,7 +373,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         root: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
         },
       },
     },
@@ -351,15 +386,20 @@ export const theme = createTheme({
     Table: {
       styles: {
         table: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
         th: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          color: "light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-1))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          color:
+            "light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-1))",
         },
         td: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -367,11 +407,13 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         item: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
         control: {
           "&:hover": {
-            backgroundColor: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
+            backgroundColor:
+              "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
           },
         },
       },
@@ -382,8 +424,10 @@ export const theme = createTheme({
     Code: {
       styles: {
         root: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          color: "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-0))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
+          color:
+            "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-0))",
         },
       },
     },
@@ -391,7 +435,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs" },
       styles: {
         root: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
         },
       },
     },
@@ -400,7 +445,8 @@ export const theme = createTheme({
     Divider: {
       styles: {
         root: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },
@@ -408,7 +454,8 @@ export const theme = createTheme({
       defaultProps: { radius: "xs", size: "sm" },
       styles: {
         track: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
         },
         bar: {
           backgroundColor: "var(--mantine-color-Remoraid-6)",
@@ -418,10 +465,12 @@ export const theme = createTheme({
     Stepper: {
       styles: {
         separator: {
-          backgroundColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          backgroundColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
         stepIcon: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
           "&[data-completed]": {
             backgroundColor: "var(--mantine-color-Remoraid-6)",
             borderColor: "var(--mantine-color-Remoraid-6)",
@@ -432,7 +481,8 @@ export const theme = createTheme({
     Timeline: {
       styles: {
         item: {
-          borderColor: "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          borderColor:
+            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
         },
       },
     },

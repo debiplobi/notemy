@@ -1,10 +1,10 @@
 "use client";
+import { Card, SimpleGrid, Text } from "@mantine/core";
+import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { decryptNote } from "@/lib/asymmetricKeyManager";
-import { notifications } from "@mantine/notifications";
-import { SimpleGrid, Card, Text } from "@mantine/core";
 
-import { DecryptedNoteType } from "./Dashboard";
+import type { DecryptedNoteType } from "./Dashboard";
 
 interface EncryptedNote {
   id: string;
@@ -17,7 +17,7 @@ interface EncryptedNote {
 
 function truncate(text: string, max = 60) {
   if (text.length <= max) return text;
-  return text.slice(0, max).trimEnd() + "…";
+  return `${text.slice(0, max).trimEnd()}…`;
 }
 
 async function fetchAndDecryptNotes(

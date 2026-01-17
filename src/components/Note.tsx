@@ -1,39 +1,30 @@
 "use client";
-import { useEffect } from "react";
 import {
-  Modal,
-  Button,
-  TextInput,
-  Textarea,
-  Group,
-  Box,
-  Stack,
   ActionIcon,
+  Box,
+  Button,
+  Group,
+  Modal,
+  Stack,
   Text,
+  Textarea,
+  TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useDisclosure } from "@mantine/hooks";
-import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
-import { DecryptedNoteType } from "./Dashboard";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect } from "react";
+import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
 import classes from "@/styles/NoteForms.module.css";
+import type { DecryptedNoteType } from "./Dashboard";
 
 interface EncryptedNotePayload {
   ciphertext: string;
   iv: string;
   ephemeralPublicKey: string;
 }
-
-const formatDate = (date: string) =>
-  new Date(date).toLocaleString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  });
 
 async function updateNote(noteId: string, encryptedNote: EncryptedNotePayload) {
   const res = await fetch(`/api/note/${noteId}`, {
@@ -64,13 +55,11 @@ export function EditNoteForm({
   onCloseAction,
   note,
   pubKey,
-  privateKey,
 }: {
   opened: boolean;
   onCloseAction: () => void;
   note: DecryptedNoteType;
   pubKey: string;
-  privateKey: CryptoKey;
 }) {
   const queryClient = useQueryClient();
   const [
@@ -92,14 +81,14 @@ export function EditNoteForm({
         title: note.title,
         content: note.content,
       });
-    } catch (e) {
+    } catch (_e) {
       notifications.show({
         title: "Error",
         message: "Failed to show note",
         color: "red",
       });
     }
-  }, [opened, note]);
+  }, [opened, note, form]);
 
   const updateMutation = useMutation({
     mutationFn: async (values: { title: string; content: string }) => {
@@ -221,11 +210,7 @@ export function EditNoteForm({
           </Box>
 
           {/* Footer */}
-          <Group
-            justify="space-between"
-            p="xl"
-            className={classes.footer}
-          >
+          <Group justify="space-between" p="xl" className={classes.footer}>
             <Text size="xs" c="dimmed">
               {note.updatedAt ? "Last edited: " : "Created: "}
               {displayedDate}
