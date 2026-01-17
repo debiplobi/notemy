@@ -119,18 +119,8 @@ export default function Home() {
 
   if (isPending && pubKey) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <IconLoader3
-          size={32}
-          style={{ animation: "spin 1s linear infinite" }}
-        />
+      <div className="flex-center-screen">
+        <IconLoader3 size={32} className="animate-spin-custom" />
       </div>
     );
   }
@@ -162,13 +152,7 @@ export default function Home() {
       )}
 
       <div>
-        <div
-          style={{
-            marginBottom: "2em",
-            display: "flex",
-            justifyContent: "center",
-          }}
-        >
+        <div className="flex-center-mb-large">
           {pubKey && (
             <div>
               <AddNoteForm

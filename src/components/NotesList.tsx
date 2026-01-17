@@ -107,7 +107,7 @@ export default function NotesList({
         <Card
           key={note.id}
           p="md"
-          style={{ cursor: "pointer" }}
+          className="cursor-pointer"
           onClick={() => {
             setSelectedNote(note);
             openEditNoteModal();

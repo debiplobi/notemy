@@ -18,6 +18,7 @@ import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { DecryptedNoteType } from "./Dashboard";
+import classes from "@/styles/NoteForms.module.css";
 
 interface EncryptedNotePayload {
   ciphertext: string;
@@ -171,34 +172,14 @@ export function EditNoteForm({
         fullScreen
         radius={0}
         transitionProps={{ transition: "fade", duration: 200 }}
-        styles={{
-          content: {
-            display: "flex",
-            flexDirection: "column",
-          },
-          body: {
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            padding: 0,
-          },
+        classNames={{
+          content: classes.modalContent,
+          body: classes.modalBody,
         }}
       >
-        <Box
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            height: "100%",
-          }}
-        >
+        <Box className={classes.container}>
           {/* Header */}
-          <Box
-            p="xl"
-            style={(theme) => ({
-              borderBottom: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-              backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
-            })}
-          >
+          <Box p="xl" className={classes.header}>
             <Group justify="space-between" align="center">
               <Text size="xl" fw={700}>
                 Edit Note
@@ -216,60 +197,23 @@ export function EditNoteForm({
           </Box>
 
           {/* Content */}
-          <Box
-            style={{
-              flex: 1,
-              overflow: "auto",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
-            <Stack gap="md" p="xl" style={{ flex: 1 }}>
+          <Box className={classes.contentScroll}>
+            <Stack gap="md" p="xl" className={classes.formStack}>
               <TextInput
                 placeholder="Enter note title..."
                 size="lg"
-                styles={{
-                  input: {
-                    fontWeight: 600,
-                    fontSize: "1.25rem",
-                    border: "none",
-                    borderBottom: `2px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-                    borderRadius: 0,
-                    padding: "0.5rem 0",
-                    backgroundColor: "transparent",
-                    "&:focus": {
-                      borderBottomColor: "var(--mantine-color-Remoraid-6)",
-                    },
-                  },
+                classNames={{
+                  input: classes.titleInput,
                 }}
                 {...form.getInputProps("title")}
               />
 
               <Textarea
                 placeholder="Start writing your note..."
-                styles={{
-                  root: {
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  },
-                  wrapper: {
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  },
-                  input: {
-                    flex: 1,
-                    fontSize: "1rem",
-                    lineHeight: 1.6,
-                    border: "none",
-                    padding: "1rem 0",
-                    resize: "none",
-                    backgroundColor: "transparent",
-                    "&:focus": {
-                      outline: "none",
-                    },
-                  },
+                classNames={{
+                  root: classes.contentInputRoot,
+                  wrapper: classes.contentInputWrapper,
+                  input: classes.contentInput,
                 }}
                 {...form.getInputProps("content")}
               />
@@ -280,10 +224,7 @@ export function EditNoteForm({
           <Group
             justify="space-between"
             p="xl"
-            style={{
-              borderTop: `1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))`,
-              backgroundColor: `light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))`,
-            }}
+            className={classes.footer}
           >
             <Text size="xs" c="dimmed">
               {note.updatedAt ? "Last edited: " : "Created: "}

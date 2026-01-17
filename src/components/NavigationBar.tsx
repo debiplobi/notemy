@@ -27,7 +27,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
-            <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            <Link href="/" className="link-reset">
               <Text fw={700} size="lg">
                 Notemy
               </Text>
@@ -44,7 +44,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                     radius="xl"
                     size={36}
                     alt={session?.user?.name || "User avatar"}
-                    style={{ cursor: "pointer" }}
+                    className="cursor-pointer"
                   >
                     {session?.user.name?.[0]?.toUpperCase() || ""}
                   </Avatar>
