@@ -50,7 +50,7 @@ async function fetchAndDecryptNotes(
 }
 
 interface PropsType {
-  privateKey: CryptoKey;
+  privateKey: CryptoKey | null;
   setSelectedNote: React.Dispatch<React.SetStateAction<DecryptedNoteType>>;
   openEditNoteModal: () => void;
   openKeyModal: () => void;
@@ -69,9 +69,16 @@ export default function NotesList({
     error,
   } = useQuery({
     queryKey: ["notes"],
-    queryFn: () => fetchAndDecryptNotes(privateKey),
-    staleTime: 1000 * 60 * 5, // Consider data fresh for 5 minutes
+    queryFn: async () => {
+      if (!privateKey) {
+        openKeyModal();
+        throw new Error("Private key is null");
+      }
+      return fetchAndDecryptNotes(privateKey);
+    },
+    staleTime: 1000 * 60 * 5,
     retry: 1,
+    enabled: !!privateKey,
   });
 
   // Show error notification when query fails

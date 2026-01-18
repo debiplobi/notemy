@@ -1,6 +1,5 @@
 "use client";
 import {
-  ActionIcon,
   Box,
   Button,
   Group,
@@ -14,7 +13,6 @@ import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote } from "@/lib/asymmetricKeyManager";
-import classes from "@/styles/NoteForms.module.css";
 import type { DecryptedNoteType } from "./Dashboard";
 import { DeleteModal } from "./DeleteModal";
 
@@ -182,19 +180,20 @@ export function EditNoteForm({
         </Box>
       </Box>
       {/* Footer */}
-      <Group
-        style={{
-          justifyContent: "space-between",
-          padding: "1rem",
-        }}
-      >
-        <Text size="xs" c="dimmed">
+      <Group p="md" w="100%" wrap="wrap" gap="sm">
+        <Text size="xs" c="dimmed" w={{ base: "100%", sm: "auto" }}>
           {note.updatedAt ? "Last edited: " : "Created: "}
           {displayedDate}
         </Text>
-        <Group justify="space-between">
+
+        <Group
+          justify="space-between"
+          w={{ base: "100%", sm: "auto" }}
+          style={{ flex: 1 }}
+          wrap="wrap"
+        >
           <DeleteModal id={note.id} onCloseAction={onCloseAction} />
-          <Group gap={"sm"}>
+          <Group gap="sm">
             <Button variant="subtle" onClick={handleCancel} color="gray">
               Cancel
             </Button>

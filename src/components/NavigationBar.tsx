@@ -17,6 +17,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
   const logoutFn = async () => {
     await authClient.signOut(); // invalidate session server-side
     secureLocalStorage.removeItem("privateKey");
+    secureLocalStorage.removeItem("publicKey");
 
     await refetch();
     window.location.reload();

@@ -117,9 +117,9 @@ export default function Home() {
   }
 
   return (
-    <div>
+    <>
       {publicKey ? (
-        <div>
+        <>
           <AddNoteForm publicKey={publicKey} />
 
           <KeyGenerationModal
@@ -127,29 +127,24 @@ export default function Home() {
             onCloseAction={closeKeyModal}
             isGeneratedUserKeys={!!publicKey}
           />
-
-          {privateKey && publicKey && (
-            <>
-              <NotesList
-                privateKey={privateKey}
-                setSelectedNote={setSelectedNote}
-                openEditNoteModal={openEditNoteModal}
-                openKeyModal={openKeyModal}
-              />
-              {selectedNote?.id !== "" && (
-                <EditNoteForm
-                  opened={editNoteModalOpened}
-                  onCloseAction={closeEditNoteModal}
-                  note={selectedNote}
-                  publicKey={publicKey}
-                />
-              )}
-            </>
+          <NotesList
+            privateKey={privateKey}
+            setSelectedNote={setSelectedNote}
+            openEditNoteModal={openEditNoteModal}
+            openKeyModal={openKeyModal}
+          />
+          {selectedNote?.id !== "" && (
+            <EditNoteForm
+              opened={editNoteModalOpened}
+              onCloseAction={closeEditNoteModal}
+              note={selectedNote}
+              publicKey={publicKey}
+            />
           )}
-        </div>
+        </>
       ) : (
         <SignIn />
       )}
-    </div>
+    </>
   );
 }
