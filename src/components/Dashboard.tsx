@@ -1,6 +1,5 @@
 "use client";
 
-import { Button, Container } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { IconLoader3 } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
@@ -9,9 +8,10 @@ import { AddNoteForm } from "@/components/AddNoteForm";
 import { KeyGenerationModal } from "@/components/encryptionModal";
 import NotesList from "@/components/NotesList";
 import SignIn from "@/components/sign-in";
-import { importPrivateKey } from "@/lib/asymmetricKeyManager";
+import { importPrivateKey, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { authClient } from "@/lib/auth-client";
 import { EditNoteForm } from "./Note";
+import { ActionIcon } from "@mantine/core";
 
 type EncryptionKeyResp = { encryptionKey: string };
 
@@ -32,26 +32,13 @@ export const EMPTY_NOTE: DecryptedNoteType = {
 };
 
 export default function Home() {
-  /* ------------------------------------------------------------------ */
-  /* Auth                                                               */
-  /* ------------------------------------------------------------------ */
-
   const { data: session, isPending } = authClient.useSession();
 
-  /* ------------------------------------------------------------------ */
-  /* State                                                              */
-  /* ------------------------------------------------------------------ */
-
   const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
-  const [pubKey, setPubKey] = useState<string | null>(null);
+  const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
 
   const [keyModalOpened, { open: openKeyModal, close: closeKeyModal }] =
     useDisclosure(false);
-
-  const [
-    addNoteModalOpened,
-    { open: openAddNoteModal, close: closeaddNoteModal },
-  ] = useDisclosure(false);
 
   const [
     editNoteModalOpened,
@@ -61,9 +48,20 @@ export default function Home() {
   const [selectedNote, setSelectedNote] =
     useState<DecryptedNoteType>(EMPTY_NOTE);
 
-  /* ------------------------------------------------------------------ */
-  /* Load private key from secure storage                                */
-  /* ------------------------------------------------------------------ */
+  useEffect(() => {
+    const loadPublicKey = async () => {
+      const pem = secureLocalStorage.getItem("publicKey")?.toString() ?? "";
+
+      try {
+        const key = await importPublicKey(pem);
+        setPublicKey(key);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    loadPublicKey();
+  }, []);
 
   useEffect(() => {
     const loadPrivateKey = async () => {
@@ -86,105 +84,72 @@ export default function Home() {
     loadPrivateKey();
   }, [openKeyModal]);
 
-  /* ------------------------------------------------------------------ */
-  /* Fetch public key from server                                        */
-  /* ------------------------------------------------------------------ */
-
   useEffect(() => {
-    if (!session?.user) return;
+    const fetchEncryptionKey = async () => {
+      if (!session?.user) return;
 
-    let cancelled = false;
-
-    const fetchKey = async () => {
       const res = await fetch("/api/user/encryption-key");
 
-      if (!res.ok || cancelled) return;
+      if (!res.ok) return;
 
       const json: EncryptionKeyResp = await res.json();
-      setPubKey(json.encryptionKey);
+      const pem = await importPublicKey(json.encryptionKey);
+      setPublicKey(pem);
+      secureLocalStorage.setItem("publicKey", json.encryptionKey);
     };
-
-    fetchKey();
-
-    return () => {
-      cancelled = true;
-    };
-  }, [session?.user?.id, session?.user]);
-
-  /* ------------------------------------------------------------------ */
-  /* Loading                                                            */
-  /* ------------------------------------------------------------------ */
+    if (!publicKey) {
+      try {
+        fetchEncryptionKey();
+      } catch (err) {
+        console.error("Failed to fetch public key", err);
+      }
+    }
+  }, [session?.user?.id, session?.user, publicKey]);
 
   if (isPending) {
     return (
-      <div className="flex-center-screen">
-        <IconLoader3 size={32} className="animate-spin-custom" />
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <ActionIcon loading={isPending} variant="transparent">
+          <IconLoader3 size={32} />
+        </ActionIcon>
       </div>
     );
   }
-
-  /* ------------------------------------------------------------------ */
-  /* Not logged in                                                       */
-  /* ------------------------------------------------------------------ */
-
-  if (!session?.user && !isPending && !pubKey) {
-    return (
-      <Container size="xs" py={80}>
-        <SignIn />
-      </Container>
-    );
-  }
-
-  /* ------------------------------------------------------------------ */
-  /* Main UI                                                            */
-  /* ------------------------------------------------------------------ */
 
   return (
-    <>
-      {pubKey && (
-        <KeyGenerationModal
-          opened={keyModalOpened}
-          onCloseAction={closeKeyModal}
-          isGeneratedUserKeys={!!pubKey}
-        />
-      )}
+    <div>
+      {publicKey ? (
+        <div>
+          <AddNoteForm publicKey={publicKey} />
 
-      <div>
-        <div className="flex-center-mb-large">
-          {pubKey && (
-            <div>
-              <AddNoteForm
-                pubKey={pubKey}
-                opened={addNoteModalOpened}
-                onCloseAction={closeaddNoteModal}
+          <KeyGenerationModal
+            opened={keyModalOpened}
+            onCloseAction={closeKeyModal}
+            isGeneratedUserKeys={!!publicKey}
+          />
+
+          {privateKey && publicKey && (
+            <>
+              <NotesList
+                privateKey={privateKey}
+                setSelectedNote={setSelectedNote}
+                openEditNoteModal={openEditNoteModal}
+                openKeyModal={openKeyModal}
               />
-
-              <Button variant="default" onClick={openAddNoteModal} size="md">
-                Add New Note
-              </Button>
-            </div>
+              {selectedNote?.id !== "" && (
+                <EditNoteForm
+                  opened={editNoteModalOpened}
+                  onCloseAction={closeEditNoteModal}
+                  note={selectedNote}
+                  publicKey={publicKey}
+                />
+              )}
+            </>
           )}
         </div>
-
-        {privateKey && pubKey && (
-          <>
-            <NotesList
-              privateKey={privateKey}
-              setSelectedNote={setSelectedNote}
-              openEditNoteModal={openEditNoteModal}
-              openKeyModal={openKeyModal}
-            />
-            {selectedNote?.id !== "" && (
-              <EditNoteForm
-                opened={editNoteModalOpened}
-                onCloseAction={closeEditNoteModal}
-                note={selectedNote}
-                pubKey={pubKey}
-              />
-            )}
-          </>
-        )}
-      </div>
-    </>
+      ) : (
+        <SignIn />
+      )}
+    </div>
   );
 }

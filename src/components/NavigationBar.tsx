@@ -1,5 +1,5 @@
 "use client";
-import { AppShell, Avatar, Group, Menu, Text } from "@mantine/core";
+import { Anchor, AppShell, Avatar, Group, Menu, Text } from "@mantine/core";
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import Link from "next/link";
 import secureLocalStorage from "react-secure-storage";
@@ -27,11 +27,11 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
       <AppShell.Header>
         <Group h="100%" px="md" justify="space-between">
           <Group>
-            <Link href="/" className="link-reset">
+            <Anchor component={Link} href="/" underline="never">
               <Text fw={700} size="lg">
                 Notemy
               </Text>
-            </Link>
+            </Anchor>
           </Group>
           <Group gap="sm">
             <ThemeToggle />

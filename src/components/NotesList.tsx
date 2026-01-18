@@ -110,7 +110,7 @@ export default function NotesList({
   }
 
   return (
-    <SimpleGrid cols={{ base: 1, sm: 2, md: 3 }}>
+    <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }}>
       {notes?.map((note: DecryptedNoteType) => (
         <Card
           key={note.id}
@@ -121,7 +121,9 @@ export default function NotesList({
             openEditNoteModal();
           }}
         >
-          <Text fw={600}>{note.title}</Text>
+          <Text fw={600} size="1.1rem">
+            {truncate(note.title, 30)}
+          </Text>
           <Text
             c="dimmed"
             style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}

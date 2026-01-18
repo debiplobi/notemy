@@ -12,8 +12,9 @@ import {
 import { useForm } from "@mantine/form";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
+import { encryptNote } from "@/lib/asymmetricKeyManager";
 import classes from "@/styles/NoteForms.module.css";
+import { useDisclosure } from "@mantine/hooks";
 
 interface EncryptedNote {
   ciphertext: string;
@@ -36,15 +37,9 @@ async function addNote(encryptedNote: EncryptedNote): Promise<void> {
   }
 }
 
-export function AddNoteForm({
-  pubKey,
-  opened,
-  onCloseAction,
-}: {
-  pubKey: string;
-  opened: boolean;
-  onCloseAction: () => void;
-}) {
+export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
+  const [opened, { open: openAddNoteModal, close: onCloseAction }] =
+    useDisclosure(false);
   const queryClient = useQueryClient();
 
   const form = useForm({
@@ -79,7 +74,6 @@ export function AddNoteForm({
 
   const handleSubmit = async (values: { title: string; content: string }) => {
     try {
-      const publicKey = await importPublicKey(pubKey);
       const notePayload = JSON.stringify({
         title: values.title,
         content: values.content,
@@ -102,51 +96,107 @@ export function AddNoteForm({
   };
 
   return (
-    <Modal
-      opened={opened}
-      onClose={handleCancel}
-      fullScreen
-      radius={0}
-      transitionProps={{ transition: "fade", duration: 200 }}
-      classNames={{
-        content: classes.modalContent,
-        body: classes.modalBody,
-      }}
-    >
-      <Box className={classes.container}>
-        {/* Header */}
-        <Box p="xl" className={classes.header}>
-          <Text size="xl" fw={700} ta="center">
-            Add New Note
-          </Text>
-        </Box>
-
-        {/* Content */}
-        <Box className={classes.contentScroll}>
-          <Stack gap="md" p="xl" className={classes.formStack}>
-            <TextInput
-              placeholder="Enter note title..."
-              size="lg"
-              classNames={{
-                input: classes.titleInput,
+    <div>
+      <div
+        style={{
+          marginBottom: "1rem",
+          justifyContent: "center",
+          display: "flex",
+        }}
+      >
+        <Button variant="default" onClick={openAddNoteModal} size="md">
+          Add New Note
+        </Button>
+      </div>
+      <Modal
+        opened={opened}
+        onClose={handleCancel}
+        fullScreen
+        radius={0}
+        title={"Add New Note"}
+        transitionProps={{ transition: "fade", duration: 200 }}
+        styles={{
+          content: {
+            display: "flex",
+            flexDirection: "column",
+          },
+          body: {
+            flex: 1,
+            display: "flex",
+            flexDirection: "column",
+            padding: 0,
+          },
+        }}
+      >
+        <Box
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            height: "100%",
+          }}
+        >
+          {/* Content */}
+          <Box
+            style={{
+              flex: 1,
+              overflow: "auto",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <Stack
+              gap="md"
+              p="xl"
+              style={{
+                flex: 1,
               }}
-              {...form.getInputProps("title")}
-            />
-
-            <Textarea
-              placeholder="Start writing your note..."
-              classNames={{
-                root: classes.contentInputRoot,
-                wrapper: classes.contentInputWrapper,
-                input: classes.contentInput,
-              }}
-              {...form.getInputProps("content")}
-            />
-          </Stack>
+            >
+              <TextInput
+                placeholder="Enter note title..."
+                size="lg"
+                styles={{
+                  input: {
+                    fontWeight: 600,
+                    fontSize: "1.25rem",
+                    padding: "0.5rem",
+                  },
+                }}
+                {...form.getInputProps("title")}
+              />
+              <Textarea
+                placeholder="Start writing your note..."
+                styles={{
+                  root: {
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                  },
+                  wrapper: {
+                    flex: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                  },
+                  input: {
+                    flex: 1,
+                    fontSize: "1rem",
+                    lineHeight: 1.6,
+                    padding: "1rem ",
+                    resize: "none",
+                  },
+                }}
+                {...form.getInputProps("content")}
+              />
+            </Stack>
+          </Box>
         </Box>
-
         {/* Footer */}
-        <Group justify="flex-end" p="xl" className={classes.footer}>
+        <Group
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            padding: "1rem",
+          }}
+        >
           <Button variant="subtle" onClick={handleCancel} color="gray">
             Cancel
           </Button>
@@ -157,7 +207,7 @@ export function AddNoteForm({
             Save Note
           </Button>
         </Group>
-      </Box>
-    </Modal>
+      </Modal>
+    </div>
   );
 }

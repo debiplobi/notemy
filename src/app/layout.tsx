@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import {
@@ -7,7 +7,7 @@ import {
   MantineProvider,
   mantineHtmlProps,
 } from "@mantine/core";
-import { theme } from "./theme";
+import theme from "./theme";
 import "@mantine/notifications/styles.css";
 import { Notifications } from "@mantine/notifications";
 import Navbar from "@/components/NavigationBar";
@@ -16,6 +16,12 @@ import { TanstackProvider } from "@/providers/Tanstackprovider";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const lato = Lato({
+  variable: "--font-lato",
+  subsets: ["latin"],
+  weight: "400",
 });
 
 const geistMono = Geist_Mono({
@@ -38,7 +44,9 @@ export default function RootLayout({
       <head>
         <ColorSchemeScript />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} ${lato.variable}`}
+      >
         <MantineProvider theme={theme} defaultColorScheme="dark">
           <Notifications position="top-right" zIndex={1000} />
           <TanstackProvider>

@@ -94,7 +94,6 @@ export function KeyGenerationModal({
     }
   };
 
-  //TODO: fix/handle when user gives someone else private key  as their
   const handleImportKey = async () => {
     try {
       setImportError("");

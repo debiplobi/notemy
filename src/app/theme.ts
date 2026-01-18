@@ -1,6 +1,20 @@
-import { createTheme } from "@mantine/core";
+import { MantineThemeOverride } from "@mantine/core";
 
-export const theme = createTheme({
+/* -------------------------------- */
+/* DARKER BORDER TOKEN              */
+/* -------------------------------- */
+const BORDER =
+  "1px solid light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3))";
+
+const INPUT_PADDING = {
+  paddingInline: "0.875rem",
+  paddingBlock: "0.65rem",
+};
+
+const theme: MantineThemeOverride = {
+  /* -------------------------------- */
+  /* COLORS                           */
+  /* -------------------------------- */
   colors: {
     dark: [
       "#fafcff",
@@ -20,11 +34,71 @@ export const theme = createTheme({
       "#ced4e5",
       "#c3cadf",
       "#b8c1d9",
-      "#b8c1d9",
+      "#9aa8c7", // slightly darker mid-gray
       "#7b8cb8",
       "#4b5c8b",
       "#2a334d",
       "#090b10",
+    ],
+    blue: [
+      "#ddf4ff",
+      "#b6e3ff",
+      "#80ccff",
+      "#54aeff",
+      "#218bff",
+      "#0969da",
+      "#0550ae",
+      "#033d8b",
+      "#0a3069",
+      "#002155",
+    ],
+    green: [
+      "#dafbe1",
+      "#aceebb",
+      "#6fdd8b",
+      "#4ac26b",
+      "#2da44e",
+      "#1a7f37",
+      "#116329",
+      "#044f1e",
+      "#003d16",
+      "#002d11",
+    ],
+    yellow: [
+      "#fff8c5",
+      "#fae17d",
+      "#eac54f",
+      "#d4a72c",
+      "#bf8700",
+      "#9a6700",
+      "#7d4e00",
+      "#633c01",
+      "#4d2d00",
+      "#3b2300",
+    ],
+    orange: [
+      "#fff1e5",
+      "#ffd8b5",
+      "#ffb77c",
+      "#fb8f44",
+      "#e16f24",
+      "#bc4c00",
+      "#953800",
+      "#762c00",
+      "#5c2200",
+      "#471700",
+    ],
+    red: [
+      "#fff5f5",
+      "#ffe3e3",
+      "#ffc9c9",
+      "#ffa8a8",
+      "#ff8787",
+      "#ff6b6b",
+      "#fa5252",
+      "#f03e3e",
+      "#e03131",
+      "#c92a2a",
     ],
     Remoraid: [
       "#dcf2de",
@@ -39,50 +113,47 @@ export const theme = createTheme({
       "#19361d",
     ],
   },
+
   primaryColor: "Remoraid",
   primaryShade: { light: 6, dark: 5 },
+
   white: "#ffffff",
   black: "#24292f",
+
   autoContrast: true,
   luminanceThreshold: 0.3,
 
-  fontFamily: "JetBrains Mono, monospace",
-  fontFamilyMonospace: "JetBrains Mono, monospace",
-  fontSizes: {
-    xs: "0.7rem",
-    sm: "0.8rem",
-    md: "0.9rem",
-    lg: "1rem",
-    xl: "1.1rem",
-  },
-  lineHeights: {
-    xs: "1.4",
-    sm: "1.45",
-    md: "1.5",
-    lg: "1.55",
-    xl: "1.6",
-  },
+  /* -------------------------------- */
+  /* TYPOGRAPHY                       */
+  /* -------------------------------- */
+  fontFamily: "Lato",
+  fontFamilyMonospace: "Roboto Mono",
   headings: {
-    fontFamily: "JetBrains Mono, monospace",
-    fontWeight: "600",
+    fontFamily: "Georgia",
+    fontWeight: "500",
   },
 
+  /* -------------------------------- */
+  /* LAYOUT                           */
+  /* -------------------------------- */
+  scale: 1,
   radius: {
-    xs: "0px",
-    sm: "0px",
-    md: "0px",
-    lg: "0px",
-    xl: "0px",
+    xs: "0.325rem",
+    sm: "0.75rem",
+    md: "0.7rem",
+    lg: "1.2rem",
+    xl: "2.4rem",
   },
-  defaultRadius: "xs",
+  defaultRadius: "md",
 
   spacing: {
-    xs: "0.525rem",
-    sm: "0.65rem",
-    md: "0.9rem",
-    lg: "1.35rem",
-    xl: "2.2rem",
+    xs: "0.25rem",
+    sm: "0.5rem",
+    md: "1rem",
+    lg: "1.25rem",
+    xl: "1.5rem",
   },
+
   breakpoints: {
     xs: "36em",
     sm: "48em",
@@ -92,399 +163,110 @@ export const theme = createTheme({
   },
 
   fontSmoothing: true,
+  respectReducedMotion: false,
   focusRing: "auto",
-  cursorType: "default",
+  cursorType: "pointer",
 
-  // Better dimmed text colors
-  other: {
-    dimmedColor:
-      "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
-  },
-
+  /* -------------------------------- */
+  /* COMPONENT STYLES                 */
+  /* -------------------------------- */
   components: {
-    // Form Inputs
-    Input: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        input: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          color:
-            "light-dark(var(--mantine-color-black), var(--mantine-color-dark-0))",
-          "&:focus": {
-            borderColor: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    TextInput: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    Textarea: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    NumberInput: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    PasswordInput: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    Select: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    MultiSelect: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    Checkbox: {
-      defaultProps: { size: "sm" },
-      styles: {
-        input: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&:checked": {
-            backgroundColor: "var(--mantine-color-Remoraid-6)",
-            borderColor: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    Radio: {
-      defaultProps: { size: "sm" },
-      styles: {
-        radio: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&:checked": {
-            borderColor: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    Switch: {
-      defaultProps: { size: "sm" },
-      styles: {
-        track: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-
-    // Buttons
-    Button: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-    ActionIcon: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-    UnstyledButton: {
-      defaultProps: { radius: "xs" },
-    },
-
-    // Containers
-    Card: {
-      defaultProps: { withBorder: true, radius: "xs" },
-      styles: {
-        root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-        },
-      },
-    },
     Paper: {
-      defaultProps: { radius: "xs" },
-      styles: {
-        root: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-        },
+      styles: { root: { border: BORDER } },
+    },
+
+    Card: {
+      defaultProps: {
+        withBorder: true,
       },
-    },
-    Container: {
-      defaultProps: { size: "lg" },
-    },
-    Box: {
       styles: {
         root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+          border: BORDER,
+          backgroundColor:
+            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
         },
       },
     },
 
-    // Overlays
     Modal: {
-      defaultProps: { radius: "xs" },
       styles: {
-        content: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-        },
-        header: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-          borderBottom:
-            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
+        content: { border: BORDER },
+        header: { borderBottom: BORDER },
       },
     },
+
     Drawer: {
-      defaultProps: { radius: "xs" },
       styles: {
-        content: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-        },
-        header: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-7))",
-          borderBottom:
-            "1px solid light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
+        content: { borderLeft: BORDER },
+        header: { borderBottom: BORDER },
       },
     },
+
     Popover: {
-      defaultProps: { radius: "xs" },
       styles: {
-        dropdown: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
+        dropdown: { border: BORDER },
       },
     },
+
     Tooltip: {
-      defaultProps: { radius: "xs" },
       styles: {
-        tooltip: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-4))",
-          color:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-0))",
-        },
+        tooltip: { border: BORDER },
       },
     },
-    Menu: {
-      defaultProps: { radius: "xs" },
+
+    /* -------- Inputs -------- */
+    Input: {
       styles: {
-        dropdown: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-        item: {
-          "&[data-hovered]": {
-            backgroundColor:
-              "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          },
+        input: {
+          border: BORDER,
+          ...INPUT_PADDING,
         },
       },
     },
 
-    // Navigation
-    Tabs: {
-      defaultProps: { radius: "xs" },
+    Textarea: {
       styles: {
-        tab: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&[data-active]": {
-            borderColor: "var(--mantine-color-Remoraid-6)",
-            color: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    NavLink: {
-      styles: {
-        root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&[data-active]": {
-            backgroundColor:
-              "light-dark(var(--mantine-color-Remoraid-0), var(--mantine-color-dark-5))",
-            color: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    Breadcrumbs: {
-      styles: {
-        separator: {
-          color:
-            "light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2))",
-        },
-      },
-    },
-    Pagination: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        control: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&[data-active]": {
-            backgroundColor: "var(--mantine-color-Remoraid-6)",
-            borderColor: "var(--mantine-color-Remoraid-6)",
-          },
+        input: {
+          border: BORDER,
+          ...INPUT_PADDING,
         },
       },
     },
 
-    // Feedback
-    Alert: {
-      defaultProps: { radius: "xs" },
+    Select: {
       styles: {
-        root: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+        input: {
+          border: BORDER,
+          ...INPUT_PADDING,
         },
       },
-    },
-    Notification: {
-      defaultProps: { radius: "xs" },
-      styles: {
-        root: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-white), var(--mantine-color-dark-6))",
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-    Progress: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        root: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
-        },
-      },
-    },
-    Loader: {
-      defaultProps: { size: "sm" },
     },
 
-    // Data Display
+    Button: {
+      styles: {
+        root: {
+          border: BORDER,
+        },
+      },
+    },
+
     Table: {
       styles: {
-        table: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-        th: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          color:
-            "light-dark(var(--mantine-color-gray-8), var(--mantine-color-dark-1))",
-        },
-        td: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-    Accordion: {
-      defaultProps: { radius: "xs" },
-      styles: {
-        item: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-        control: {
-          "&:hover": {
-            backgroundColor:
-              "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          },
-        },
-      },
-    },
-    Badge: {
-      defaultProps: { radius: "xs", size: "sm" },
-    },
-    Code: {
-      styles: {
-        root: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-5))",
-          color:
-            "light-dark(var(--mantine-color-dark-9), var(--mantine-color-dark-0))",
-        },
-      },
-    },
-    CodeHighlight: {
-      defaultProps: { radius: "xs" },
-      styles: {
-        root: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-0), var(--mantine-color-dark-6))",
-        },
+        table: { border: BORDER },
+        th: { borderBottom: BORDER },
+        td: { borderBottom: BORDER },
       },
     },
 
-    // Miscellaneous
     Divider: {
       styles: {
         root: {
           borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-      },
-    },
-    Slider: {
-      defaultProps: { radius: "xs", size: "sm" },
-      styles: {
-        track: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-1), var(--mantine-color-dark-5))",
-        },
-        bar: {
-          backgroundColor: "var(--mantine-color-Remoraid-6)",
-        },
-      },
-    },
-    Stepper: {
-      styles: {
-        separator: {
-          backgroundColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-        },
-        stepIcon: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
-          "&[data-completed]": {
-            backgroundColor: "var(--mantine-color-Remoraid-6)",
-            borderColor: "var(--mantine-color-Remoraid-6)",
-          },
-        },
-      },
-    },
-    Timeline: {
-      styles: {
-        item: {
-          borderColor:
-            "light-dark(var(--mantine-color-gray-3), var(--mantine-color-dark-3))",
+            "light-dark(var(--mantine-color-gray-5), var(--mantine-color-dark-3))",
         },
       },
     },
   },
-});
+};
+
+export default theme;

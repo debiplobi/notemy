@@ -11,13 +11,12 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
-import { IconTrash } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { encryptNote, importPublicKey } from "@/lib/asymmetricKeyManager";
+import { encryptNote } from "@/lib/asymmetricKeyManager";
 import classes from "@/styles/NoteForms.module.css";
 import type { DecryptedNoteType } from "./Dashboard";
+import { DeleteModal } from "./DeleteModal";
 
 interface EncryptedNotePayload {
   ciphertext: string;
@@ -38,33 +37,18 @@ async function updateNote(noteId: string, encryptedNote: EncryptedNotePayload) {
   }
 }
 
-async function deleteNote(noteId: string) {
-  const res = await fetch(`/api/note/${noteId}`, {
-    method: "DELETE",
-    credentials: "include",
-  });
-
-  if (!res.ok) {
-    throw new Error("Failed to delete note");
-  }
-}
-
 export function EditNoteForm({
   opened,
   onCloseAction,
   note,
-  pubKey,
+  publicKey,
 }: {
   opened: boolean;
   onCloseAction: () => void;
   note: DecryptedNoteType;
-  pubKey: string;
+  publicKey: CryptoKey;
 }) {
   const queryClient = useQueryClient();
-  const [
-    deleteModalOpened,
-    { open: openDeleteModal, close: closeDeleteModal },
-  ] = useDisclosure(false);
 
   const form = useForm({
     initialValues: {
@@ -85,7 +69,6 @@ export function EditNoteForm({
   const updateMutation = useMutation({
     mutationFn: async (values: { title: string; content: string }) => {
       if (!note) return;
-      const publicKey = await importPublicKey(pubKey);
       const payload = JSON.stringify(values);
       const encrypted = await encryptNote(payload, publicKey);
       await updateNote(note.id, encrypted);
@@ -108,36 +91,8 @@ export function EditNoteForm({
     },
   });
 
-  const deleteMutation = useMutation({
-    mutationFn: async () => {
-      if (!note) return;
-      await deleteNote(note.id);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["notes"] });
-      notifications.show({
-        title: "Deleted",
-        message: "Note deleted successfully",
-        color: "blue",
-      });
-      closeDeleteModal();
-      onCloseAction();
-    },
-    onError: () => {
-      notifications.show({
-        title: "Error",
-        message: "Failed to delete note",
-        color: "red",
-      });
-    },
-  });
-
   const handleCancel = () => {
     onCloseAction();
-  };
-
-  const handleDeleteConfirm = () => {
-    deleteMutation.mutate();
   };
 
   const displayedDate = updateMutation.isSuccess
@@ -145,110 +100,115 @@ export function EditNoteForm({
     : new Date(note.updatedAt ?? note.createdAt).toLocaleString();
 
   return (
-    <>
-      <Modal
-        key={note.id}
-        opened={opened}
-        onClose={handleCancel}
-        fullScreen
-        radius={0}
-        transitionProps={{ transition: "fade", duration: 200 }}
-        classNames={{
-          content: classes.modalContent,
-          body: classes.modalBody,
+    <Modal
+      key={note.id}
+      opened={opened}
+      onClose={handleCancel}
+      fullScreen
+      radius={0}
+      title={"Edit Note"}
+      transitionProps={{ transition: "fade", duration: 200 }}
+      styles={{
+        content: {
+          display: "flex",
+          flexDirection: "column",
+        },
+        body: {
+          flex: 1,
+          display: "flex",
+          flexDirection: "column",
+          padding: 0,
+        },
+      }}
+    >
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
         }}
       >
-        <Box className={classes.container}>
-          {/* Header */}
-          <Box p="xl" className={classes.header}>
-            <Group justify="space-between" align="center">
-              <Text size="xl" fw={700}>
-                Edit Note
-              </Text>
-              <ActionIcon
-                color="red"
-                variant="filled"
-                size="lg"
-                onClick={openDeleteModal}
-                aria-label="Delete note"
-              >
-                <IconTrash size={20} />
-              </ActionIcon>
-            </Group>
-          </Box>
-
-          {/* Content */}
-          <Box className={classes.contentScroll}>
-            <Stack gap="md" p="xl" className={classes.formStack}>
-              <TextInput
-                placeholder="Enter note title..."
-                size="lg"
-                classNames={{
-                  input: classes.titleInput,
-                }}
-                {...form.getInputProps("title")}
-              />
-
-              <Textarea
-                placeholder="Start writing your note..."
-                classNames={{
-                  root: classes.contentInputRoot,
-                  wrapper: classes.contentInputWrapper,
-                  input: classes.contentInput,
-                }}
-                {...form.getInputProps("content")}
-              />
-            </Stack>
-          </Box>
-
-          {/* Footer */}
-          <Group justify="space-between" p="xl" className={classes.footer}>
-            <Text size="xs" c="dimmed">
-              {note.updatedAt ? "Last edited: " : "Created: "}
-              {displayedDate}
-            </Text>
-            <Group gap="sm">
-              <Button variant="subtle" onClick={handleCancel} color="gray">
-                Cancel
-              </Button>
-              <Button
-                loading={updateMutation.isPending}
-                onClick={() =>
-                  form.onSubmit((values) => updateMutation.mutate(values))()
-                }
-              >
-                Save Changes
-              </Button>
-            </Group>
-          </Group>
-        </Box>
-      </Modal>
-
-      {/* Delete Confirmation Modal */}
-      <Modal
-        opened={deleteModalOpened}
-        onClose={closeDeleteModal}
-        title="Delete Note"
-        centered
-        size="sm"
-      >
-        <Text size="sm" mb="lg">
-          Are you sure you want to delete this note? This action cannot be
-          undone and the note will be permanently removed.
-        </Text>
-        <Group justify="flex-end" gap="sm">
-          <Button variant="subtle" onClick={closeDeleteModal} color="gray">
-            Cancel
-          </Button>
-          <Button
-            color="red"
-            onClick={handleDeleteConfirm}
-            loading={deleteMutation.isPending}
+        <Box
+          style={{
+            flex: 1,
+            overflow: "auto",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <Stack
+            gap="md"
+            p="xl"
+            style={{
+              flex: 1,
+            }}
           >
-            Delete
-          </Button>
+            <TextInput
+              placeholder="Enter note title..."
+              size="lg"
+              styles={{
+                input: {
+                  fontWeight: 600,
+                  fontSize: "1.25rem",
+                  padding: "0.5rem",
+                },
+              }}
+              {...form.getInputProps("title")}
+            />
+            <Textarea
+              placeholder="Start writing your note..."
+              styles={{
+                root: {
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                },
+                wrapper: {
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                },
+                input: {
+                  flex: 1,
+                  fontSize: "1rem",
+                  lineHeight: 1.6,
+                  padding: "1rem",
+                  resize: "none",
+                },
+              }}
+              {...form.getInputProps("content")}
+            />
+          </Stack>
+        </Box>
+      </Box>
+      {/* Footer */}
+      <Group
+        style={{
+          justifyContent: "space-between",
+          padding: "1rem",
+        }}
+      >
+        <Text size="xs" c="dimmed">
+          {note.updatedAt ? "Last edited: " : "Created: "}
+          {displayedDate}
+        </Text>
+        <Group justify="space-between">
+          <DeleteModal id={note.id} onCloseAction={onCloseAction} />
+          <Group gap={"sm"}>
+            <Button variant="subtle" onClick={handleCancel} color="gray">
+              Cancel
+            </Button>
+            <Button
+              loading={updateMutation.isPending}
+              onClick={() =>
+                form.onSubmit((values) => updateMutation.mutate(values))()
+              }
+            >
+              Save Changes
+            </Button>
+          </Group>
         </Group>
-      </Modal>
-    </>
+      </Group>
+    </Modal>
   );
 }
