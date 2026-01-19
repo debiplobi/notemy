@@ -56,7 +56,7 @@ export default function Home() {
         const key = await importPublicKey(pem);
         setPublicKey(key);
       } catch (err) {
-        console.log(err);
+        throw new Error("failed to import public key", err);
       }
     };
 
@@ -76,8 +76,9 @@ export default function Home() {
         const key = await importPrivateKey(pem);
         setPrivateKey(key);
       } catch (err) {
-        console.error("Failed to import private key", err);
+        console.log(err);
         openKeyModal();
+        throw new Error("failed to import private key");
       }
     };
 
@@ -88,23 +89,32 @@ export default function Home() {
     const fetchEncryptionKey = async () => {
       if (!session?.user) return;
 
-      const res = await fetch("/api/user/encryption-key");
-
-      if (!res.ok) return;
-
-      const json: EncryptionKeyResp = await res.json();
-      const pem = await importPublicKey(json.encryptionKey);
-      setPublicKey(pem);
-      secureLocalStorage.setItem("publicKey", json.encryptionKey);
-    };
-    if (!publicKey) {
       try {
-        fetchEncryptionKey();
+        const res = await fetch("/api/user/encryption-key");
+        if (res.status === 404) {
+          console.error("Failed to fetch public key ");
+          return;
+        }
+        if (!res.ok) {
+          throw new Error("Internal server error");
+        }
+
+        const json: EncryptionKeyResp = await res.json();
+        const pem = await importPublicKey(json.encryptionKey);
+
+        setPublicKey(pem);
+        secureLocalStorage.setItem("publicKey", json.encryptionKey);
       } catch (err) {
-        console.error("Failed to fetch public key", err);
+        console.log(err);
+        openKeyModal();
+        throw new Error("Failed to fetch public key");
       }
+    };
+
+    if (publicKey === null && session?.user) {
+      fetchEncryptionKey();
     }
-  }, [session?.user?.id, session?.user, publicKey]);
+  }, [session, publicKey]);
 
   if (isPending) {
     return (
@@ -115,7 +125,6 @@ export default function Home() {
       </div>
     );
   }
-  console.log(session);
 
   return (
     <>
@@ -123,13 +132,12 @@ export default function Home() {
         <SignIn />
       ) : (
         <>
-          {!publicKey ? (
-            <KeyGenerationModal
-              opened={keyModalOpened}
-              onCloseAction={closeKeyModal}
-              isGeneratedUserKeys={!!publicKey}
-            />
-          ) : (
+          <KeyGenerationModal
+            opened={keyModalOpened}
+            onCloseAction={closeKeyModal}
+            isGeneratedUserKeys={!!publicKey}
+          />
+          {privateKey && publicKey && (
             <>
               <AddNoteForm publicKey={publicKey} />
               <NotesList

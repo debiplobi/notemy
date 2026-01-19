@@ -8,7 +8,7 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  // 1️⃣ Authenticate
+  // 1 Authenticate
   const session = await auth.api.getSession({
     headers: request.headers,
   });
@@ -19,7 +19,7 @@ export async function GET(
 
   const { id } = await params;
 
-  // 2️⃣ Query the note
+  // 2 Query the note
   const result = await db.select().from(note).where(eq(note.id, id)).limit(1);
 
   if (!result.length) {
@@ -39,7 +39,7 @@ export async function PUT(
   request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
-  // 1️⃣ Authenticate user
+  // 1 Authenticate user
   const session = await auth.api.getSession({
     headers: request.headers,
   });
@@ -54,7 +54,7 @@ export async function PUT(
     return NextResponse.json({ error: "Missing note id" }, { status: 400 });
   }
 
-  // 2️⃣ Parse body
+  // 2 Parse body
   let body: {
     ciphertext?: string;
     iv?: string;
@@ -69,7 +69,7 @@ export async function PUT(
 
   const { ciphertext, iv, ephemeralPublicKey } = body;
 
-  // 3️⃣ Validate payload
+  // 3 Validate payload
   if (
     typeof ciphertext !== "string" ||
     typeof iv !== "string" ||
@@ -81,7 +81,7 @@ export async function PUT(
     );
   }
 
-  // 4️⃣ Ensure note exists & belongs to user
+  // 4 Ensure note exists & belongs to user
   const existing = await db.query.note.findFirst({
     where: and(eq(note.id, id), eq(note.userId, session.user.id)),
     columns: { id: true },
@@ -91,7 +91,7 @@ export async function PUT(
     return NextResponse.json({ error: "Note not found" }, { status: 404 });
   }
 
-  // 5️⃣ Update encrypted note
+  // 5 Update encrypted note
   await db
     .update(note)
     .set({
@@ -102,7 +102,7 @@ export async function PUT(
     })
     .where(eq(note.id, id));
 
-  // 6️⃣ Return success
+  // 6 Return success
   return NextResponse.json({ success: true }, { status: 200 });
 }
 

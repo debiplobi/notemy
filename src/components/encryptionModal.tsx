@@ -49,6 +49,9 @@ export function KeyGenerationModal({
     if (resp.status === 200) {
       onCloseAction();
       secureLocalStorage.setItem("privateKey", privKeyPem);
+      window.location.reload();
+    } else {
+      throw new Error("failed to sent public key to server");
     }
   };
 
@@ -91,6 +94,7 @@ export function KeyGenerationModal({
       setImportError("");
     } catch (_error) {
       setImportError("Failed to read file. Please try again.");
+      throw new Error("failed to read file");
     }
   };
 
@@ -206,7 +210,7 @@ export function KeyGenerationModal({
           </>
         ) : (
           <>
-            <Alert color="red" title="⚠️ Important Warning">
+            <Alert color="red" title="! Important Warning">
               Save your private key securely. You will NOT see it again. Store
               it in a safe place like a password manager or download it to a
               secure location.

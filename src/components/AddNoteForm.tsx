@@ -87,6 +87,7 @@ export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
         message: "Failed to encrypt note",
         color: "red",
       });
+      throw new Error("failed to encrypt note");
     }
   };
 
