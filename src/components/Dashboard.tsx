@@ -115,35 +115,40 @@ export default function Home() {
       </div>
     );
   }
+  console.log(session);
 
   return (
     <>
-      {publicKey ? (
+      {!session?.user ? (
+        <SignIn />
+      ) : (
         <>
-          <AddNoteForm publicKey={publicKey} />
-
-          <KeyGenerationModal
-            opened={keyModalOpened}
-            onCloseAction={closeKeyModal}
-            isGeneratedUserKeys={!!publicKey}
-          />
-          <NotesList
-            privateKey={privateKey}
-            setSelectedNote={setSelectedNote}
-            openEditNoteModal={openEditNoteModal}
-            openKeyModal={openKeyModal}
-          />
-          {selectedNote?.id !== "" && (
-            <EditNoteForm
-              opened={editNoteModalOpened}
-              onCloseAction={closeEditNoteModal}
-              note={selectedNote}
-              publicKey={publicKey}
+          {!publicKey ? (
+            <KeyGenerationModal
+              opened={keyModalOpened}
+              onCloseAction={closeKeyModal}
+              isGeneratedUserKeys={!!publicKey}
             />
+          ) : (
+            <>
+              <AddNoteForm publicKey={publicKey} />
+              <NotesList
+                privateKey={privateKey}
+                setSelectedNote={setSelectedNote}
+                openEditNoteModal={openEditNoteModal}
+                openKeyModal={openKeyModal}
+              />
+              {selectedNote?.id !== "" && (
+                <EditNoteForm
+                  opened={editNoteModalOpened}
+                  onCloseAction={closeEditNoteModal}
+                  note={selectedNote}
+                  publicKey={publicKey}
+                />
+              )}
+            </>
           )}
         </>
-      ) : (
-        <SignIn />
       )}
     </>
   );
