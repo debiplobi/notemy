@@ -56,7 +56,7 @@ export default function Home() {
         const key = await importPublicKey(pem);
         setPublicKey(key);
       } catch (err) {
-        throw new Error("failed to import public key", err);
+        throw new Error("failed to import public key");
       }
     };
 
