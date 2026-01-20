@@ -1,9 +1,10 @@
 "use client";
-import { Card, SimpleGrid, Text } from "@mantine/core";
+import { Card, SimpleGrid, Text, Autocomplete, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
+import { IconSearch } from "@tabler/icons-react";
+import { useState, useMemo } from "react";
 import { decryptNote } from "@/lib/asymmetricKeyManager";
-
 import type { DecryptedNoteType } from "./Dashboard";
 
 interface EncryptedNote {
@@ -26,14 +27,11 @@ async function fetchAndDecryptNotes(
   const res = await fetch("/api/note", {
     credentials: "include",
   });
-
   if (!res.ok) {
     throw new Error("Failed to fetch notes");
   }
-
   const data = await res.json();
   const decrypted: DecryptedNoteType[] = [];
-
   for (const note of data.notes as EncryptedNote[]) {
     const plaintext = await decryptNote(note, privateKey);
     const parsed = JSON.parse(plaintext);
@@ -45,7 +43,6 @@ async function fetchAndDecryptNotes(
       updatedAt: note.updatedAt,
     });
   }
-
   return decrypted;
 }
 
@@ -62,6 +59,8 @@ export default function NotesList({
   openEditNoteModal,
   openKeyModal,
 }: PropsType) {
+  const [searchQuery, setSearchQuery] = useState("");
+
   const {
     data: notes,
     isLoading,
@@ -80,6 +79,25 @@ export default function NotesList({
     retry: 1,
     enabled: !!privateKey,
   });
+
+  // Filter notes based on search query
+  const filteredNotes = useMemo(() => {
+    if (!notes) return [];
+    if (!searchQuery.trim()) return notes;
+
+    const query = searchQuery.toLowerCase();
+    return notes.filter(
+      (note) =>
+        note.title.toLowerCase().includes(query) ||
+        note.content.toLowerCase().includes(query),
+    );
+  }, [notes, searchQuery]);
+
+  // Generate autocomplete suggestions from note titles
+  const autocompleteSuggestions = useMemo(() => {
+    if (!notes) return [];
+    return notes.map((note) => note.title);
+  }, [notes]);
 
   // Show error notification when query fails
   if (isError) {
@@ -100,14 +118,6 @@ export default function NotesList({
     }
   }
 
-  if (!isLoading && (!notes || notes.length === 0)) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Text>No notes yet.</Text>
-      </div>
-    );
-  }
-
   if (isLoading && !notes) {
     return (
       <div style={{ display: "flex", justifyContent: "center" }}>
@@ -116,29 +126,64 @@ export default function NotesList({
     );
   }
 
+  if (!isLoading && (!notes || notes.length === 0)) {
+    return (
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <Text>No notes yet.</Text>
+      </div>
+    );
+  }
+
   return (
-    <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }}>
-      {notes?.map((note: DecryptedNoteType) => (
-        <Card
-          key={note.id}
-          p="md"
-          className="cursor-pointer"
-          onClick={() => {
-            setSelectedNote(note);
-            openEditNoteModal();
+    <Stack gap="md">
+      {/* Search Bar */}
+      {notes && notes.length > 0 && (
+        <Autocomplete
+          placeholder="Search notes..."
+          leftSection={<IconSearch size={16} />}
+          data={autocompleteSuggestions}
+          value={searchQuery}
+          onChange={setSearchQuery}
+          limit={5}
+          maxDropdownHeight={200}
+          styles={{
+            input: {
+              paddingLeft: "2rem",
+            },
           }}
-        >
-          <Text fw={600} size="1.1rem">
-            {truncate(note.title, 30)}
-          </Text>
-          <Text
-            c="dimmed"
-            style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-          >
-            {truncate(note.content, 100)}
-          </Text>
-        </Card>
-      ))}
-    </SimpleGrid>
+        />
+      )}
+
+      {/* Notes Grid */}
+      {filteredNotes.length === 0 ? (
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Text c="dimmed">No notes found matching "{searchQuery}"</Text>
+        </div>
+      ) : (
+        <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }}>
+          {filteredNotes.map((note: DecryptedNoteType) => (
+            <Card
+              key={note.id}
+              p="md"
+              className="cursor-pointer"
+              onClick={() => {
+                setSelectedNote(note);
+                openEditNoteModal();
+              }}
+            >
+              <Text fw={600} size="1.1rem">
+                {truncate(note.title, 30)}
+              </Text>
+              <Text
+                c="dimmed"
+                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+              >
+                {truncate(note.content, 100)}
+              </Text>
+            </Card>
+          ))}
+        </SimpleGrid>
+      )}
+    </Stack>
   );
 }
