@@ -47,7 +47,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${lato.variable}`}
       >
-        <MantineProvider theme={theme} defaultColorScheme="dark">
+        <MantineProvider theme={theme} defaultColorScheme="auto">
           <Notifications position="top-right" zIndex={1000} />
           <TanstackProvider>
             <Navbar>{children}</Navbar>

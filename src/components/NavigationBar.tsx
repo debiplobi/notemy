@@ -6,22 +6,20 @@ import secureLocalStorage from "react-secure-storage";
 import { authClient } from "../lib/auth-client";
 import { ThemeToggle } from "./ThemeToggle";
 
+export const logoutFn = async () => {
+  await authClient.signOut(); // invalidate session server-side
+  secureLocalStorage.removeItem("privateKey");
+  secureLocalStorage.removeItem("publicKey");
+  window.location.reload();
+};
+
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const {
     data: session,
     // isPending, //loading state
     // error, //error object
-    refetch, //refetch the session
+    // refetch, //refetch the session
   } = authClient.useSession();
-
-  const logoutFn = async () => {
-    await authClient.signOut(); // invalidate session server-side
-    secureLocalStorage.removeItem("privateKey");
-    secureLocalStorage.removeItem("publicKey");
-
-    await refetch();
-    window.location.reload();
-  };
 
   return (
     <AppShell header={{ height: 60 }} padding="md">

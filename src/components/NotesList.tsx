@@ -2,10 +2,11 @@
 import { Card, SimpleGrid, Text, Autocomplete, Stack } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
-import { IconSearch } from "@tabler/icons-react";
+import { IconBolt, IconSearch } from "@tabler/icons-react";
 import { useState, useMemo } from "react";
 import { decryptNote } from "@/lib/asymmetricKeyManager";
 import type { DecryptedNoteType } from "./Dashboard";
+import LoadingScreen from "./LoadingIcon";
 
 interface EncryptedNote {
   id: string;
@@ -119,11 +120,7 @@ export default function NotesList({
   }
 
   if (isLoading && !notes) {
-    return (
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <Text>Decrypting Notes...</Text>
-      </div>
-    );
+    return <LoadingScreen />;
   }
 
   if (!isLoading && (!notes || notes.length === 0)) {

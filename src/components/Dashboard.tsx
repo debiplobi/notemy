@@ -1,7 +1,7 @@
 "use client";
 
 import { useDisclosure } from "@mantine/hooks";
-import { IconLoader3 } from "@tabler/icons-react";
+import { IconBolt } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 import secureLocalStorage from "react-secure-storage";
 import { AddNoteForm } from "@/components/AddNoteForm";
@@ -11,7 +11,6 @@ import SignIn from "@/components/sign-in";
 import { importPrivateKey, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { authClient } from "@/lib/auth-client";
 import { EditNoteForm } from "./Note";
-import { ActionIcon } from "@mantine/core";
 
 type EncryptionKeyResp = { encryptionKey: string };
 
@@ -56,6 +55,7 @@ export default function Home() {
         const key = await importPublicKey(pem);
         setPublicKey(key);
       } catch (err) {
+        console.log(err);
         throw new Error("failed to import public key");
       }
     };
@@ -76,7 +76,7 @@ export default function Home() {
         const key = await importPrivateKey(pem);
         setPrivateKey(key);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         openKeyModal();
         throw new Error("failed to import private key");
       }
@@ -105,7 +105,7 @@ export default function Home() {
         setPublicKey(pem);
         secureLocalStorage.setItem("publicKey", json.encryptionKey);
       } catch (err) {
-        console.log(err);
+        console.error(err);
         openKeyModal();
         throw new Error("Failed to fetch public key");
       }
@@ -118,10 +118,19 @@ export default function Home() {
 
   if (isPending) {
     return (
-      <div style={{ display: "flex", justifyContent: "center" }}>
-        <ActionIcon loading={isPending} variant="transparent">
-          <IconLoader3 size={32} />
-        </ActionIcon>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          width: "100vw",
+          position: "fixed",
+          top: 0,
+          left: 0,
+        }}
+      >
+        <IconBolt size="2rem" className="animate-spin" />
       </div>
     );
   }

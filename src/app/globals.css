@@ -1,0 +1,36 @@
+
+/* Bolt spin */
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Fill animation using mask */
+.bolt-fill {
+  position: relative;
+  color: black; /* outline color */
+}
+
+.bolt-fill::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: green;
+  mask: url(#bolt-mask);
+  -webkit-mask: url(#bolt-mask);
+  mask-size: 100% 200%;
+  -webkit-mask-size: 100% 200%;
+  animation: fill-up 2s ease-in-out infinite;
+}
+
+@keyframes fill-up {
+  from {
+    mask-position: bottom;
+    -webkit-mask-position: bottom;
+  }
+  to {
+    mask-position: top;
+    -webkit-mask-position: top;
+  }
+}

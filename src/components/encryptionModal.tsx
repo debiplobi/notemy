@@ -18,6 +18,7 @@ import {
   generateUserKeyPair,
   importPrivateKey,
 } from "@/lib/asymmetricKeyManager";
+import { logoutFn } from "./NavigationBar";
 
 export function KeyGenerationModal({
   opened,
@@ -80,7 +81,7 @@ export function KeyGenerationModal({
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "private_key.pem";
+    a.download = "notemy_private_key.pem";
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -185,16 +186,21 @@ export function KeyGenerationModal({
               </CopyButton>
             </Group>
 
-            <Group justify="flex-end" mt="md">
-              <Button variant="default" onClick={onCloseAction}>
-                Cancel
+            <Group justify="space-between" mt="md">
+              <Button variant="filled" color="red" onClick={() => logoutFn()}>
+                Logout
               </Button>
-              <Button
-                onClick={() => handleImportKey()}
-                disabled={!privateKeyInput}
-              >
-                Import Key
-              </Button>
+              <Group>
+                <Button variant="default" onClick={onCloseAction}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={() => handleImportKey()}
+                  disabled={!privateKeyInput}
+                >
+                  Import Key
+                </Button>
+              </Group>
             </Group>
           </>
         ) : // GENERATION MODE - New user
