@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Lato } from "next/font/google";
+import { Bitcount_Single, Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import {
@@ -45,7 +45,7 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${lato.variable}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${lato.variable} `}
       >
         <MantineProvider theme={theme} defaultColorScheme="auto">
           <Notifications position="top-right" zIndex={1000} />

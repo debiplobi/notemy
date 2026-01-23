@@ -1,17 +1,32 @@
 "use client";
-import { Anchor, AppShell, Avatar, Group, Menu, Text } from "@mantine/core";
+import {
+  Anchor,
+  AppShell,
+  Avatar,
+  Group,
+  Menu,
+  Text,
+  Title,
+} from "@mantine/core";
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import Link from "next/link";
 import secureLocalStorage from "react-secure-storage";
 import { authClient } from "../lib/auth-client";
 import { ThemeToggle } from "./ThemeToggle";
+import { Bitcount_Single } from "next/font/google";
 
 export const logoutFn = async () => {
-  await authClient.signOut(); // invalidate session server-side
+  await authClient.signOut();
   secureLocalStorage.removeItem("privateKey");
   secureLocalStorage.removeItem("publicKey");
   window.location.reload();
 };
+
+const bitcount = Bitcount_Single({
+  variable: "--font-bitcount",
+  subsets: ["latin"],
+  fallback: ["lato", "roboto"],
+});
 
 export default function Navbar({ children }: { children: React.ReactNode }) {
   const {
@@ -27,9 +42,9 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
         <Group h="100%" px="md" justify="space-between">
           <Group>
             <Anchor component={Link} href="/" underline="never">
-              <Text fw={700} size="lg">
+              <Title fw={700} size={"1.6rem"} className={bitcount.className}>
                 Notemy
-              </Text>
+              </Title>
             </Anchor>
           </Group>
           <Group gap="sm">
@@ -43,7 +58,7 @@ export default function Navbar({ children }: { children: React.ReactNode }) {
                     radius="xl"
                     size={36}
                     alt={session?.user?.name || "User avatar"}
-                    className="cursor-pointer"
+                    style={{ cursor: "pointer" }}
                   >
                     {session?.user.name?.[0]?.toUpperCase() || ""}
                   </Avatar>

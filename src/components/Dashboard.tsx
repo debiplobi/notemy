@@ -7,7 +7,7 @@ import secureLocalStorage from "react-secure-storage";
 import { AddNoteForm } from "@/components/AddNoteForm";
 import { KeyGenerationModal } from "@/components/encryptionModal";
 import NotesList from "@/components/NotesList";
-import SignIn from "@/components/sign-in";
+import LandingPage from "@/components/LandingPage";
 import { importPrivateKey, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { authClient } from "@/lib/auth-client";
 import { EditNoteForm } from "./Note";
@@ -114,7 +114,7 @@ export default function Home() {
     if (publicKey === null && session?.user) {
       fetchEncryptionKey();
     }
-  }, [session, publicKey]);
+  }, [session, publicKey, openKeyModal]);
 
   if (isPending) {
     return (
@@ -138,7 +138,7 @@ export default function Home() {
   return (
     <>
       {!session?.user ? (
-        <SignIn />
+        <LandingPage />
       ) : (
         <>
           <KeyGenerationModal

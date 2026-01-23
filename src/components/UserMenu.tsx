@@ -19,7 +19,7 @@ export function UserMenu({ user }: UserMenuProps) {
           radius="xl"
           size={36}
           alt={user.name || "User"}
-          className="cursor-pointer"
+          style={{ cursor: "pointer" }}
         >
           {user.name?.[0]?.toUpperCase() || "U"}
         </Avatar>

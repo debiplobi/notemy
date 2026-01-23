@@ -1,5 +1,12 @@
 "use client";
-import { Card, SimpleGrid, Text, Autocomplete, Stack } from "@mantine/core";
+import {
+  Card,
+  SimpleGrid,
+  Text,
+  Autocomplete,
+  Stack,
+  Title,
+} from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { useQuery } from "@tanstack/react-query";
 import { IconBolt, IconSearch } from "@tabler/icons-react";
@@ -94,12 +101,6 @@ export default function NotesList({
     );
   }, [notes, searchQuery]);
 
-  // Generate autocomplete suggestions from note titles
-  const autocompleteSuggestions = useMemo(() => {
-    if (!notes) return [];
-    return notes.map((note) => note.title);
-  }, [notes]);
-
   // Show error notification when query fails
   if (isError) {
     if (error?.name === "OperationError") {
@@ -138,7 +139,6 @@ export default function NotesList({
         <Autocomplete
           placeholder="Search notes..."
           leftSection={<IconSearch size={16} />}
-          data={autocompleteSuggestions}
           value={searchQuery}
           onChange={setSearchQuery}
           limit={5}
@@ -162,15 +162,15 @@ export default function NotesList({
             <Card
               key={note.id}
               p="md"
-              className="cursor-pointer"
+              style={{ cursor: "pointer" }}
               onClick={() => {
                 setSelectedNote(note);
                 openEditNoteModal();
               }}
             >
-              <Text fw={600} size="1.1rem">
+              <Title fw={600} size="1.1rem">
                 {truncate(note.title, 30)}
-              </Text>
+              </Title>
               <Text
                 c="dimmed"
                 style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
