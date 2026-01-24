@@ -7,8 +7,10 @@ import {
   Title,
   ThemeIcon,
   SimpleGrid,
+  Card,
   rem,
   Box,
+  useMantineTheme,
 } from "@mantine/core";
 import {
   IconLock,
@@ -29,14 +31,13 @@ export default function LandingPage() {
           flexDirection: "column",
           justifyContent: "center",
         }}
-        p={{ base: "md", sm: "lg" }}
       >
         <Container size="md">
-          <Stack gap={{ base: 24, sm: 32 }} align="center">
+          <Stack gap={32} align="center">
             <Title
               order={1}
-              fz={{ base: rem(32), sm: rem(40), md: rem(56) }}
               style={{
+                fontSize: rem(56),
                 fontWeight: 700,
                 lineHeight: 1.2,
                 textAlign: "center",
@@ -49,17 +50,13 @@ export default function LandingPage() {
                 End-to-end encrypted.
               </Text>
             </Title>
-            <Text
-              c="Remoraid.8"
-              maw={480}
-              ta="center"
-              fz={{ base: "md", sm: "lg" }}
-              px={{ base: "md", sm: 0 }}
-            >
+
+            <Text c="Remoraid.8" maw={480} ta="center" size="lg">
               Your notes are encrypted before they leave your device. Simple,
               secure, and private.
             </Text>
-            <Group gap="md" mt={{ base: "sm", sm: "md" }} justify="center">
+
+            <Group gap="md" mt="md">
               <Button
                 component={Link}
                 href="/auth/sign-in"
@@ -92,9 +89,9 @@ export default function LandingPage() {
       </Box>
 
       {/* FEATURES SECTION */}
-      <Box py={{ base: 40, sm: 60, md: 80 }} px={{ base: "md", sm: 0 }}>
+      <Box py={80}>
         <Container size="md">
-          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={{ base: 32, sm: 40 }}>
+          <SimpleGrid cols={{ base: 1, sm: 3 }} spacing={40}>
             <FeatureCard
               icon={IconLock}
               title="Encrypted"
@@ -122,25 +119,20 @@ function FeatureCard({
   title,
   description,
 }: {
-  icon: React.ComponentType<{ size?: number; stroke?: number }>;
+  icon: any;
   title: string;
   description: string;
 }) {
   return (
     <Stack gap="md" align="center" ta="center">
-      <ThemeIcon
-        size={{ base: 40, sm: 44 }}
-        radius="md"
-        variant="light"
-        color="Remoraid"
-      >
+      <ThemeIcon size={44} radius="md" variant="light" color="Remoraid">
         <Icon size={22} stroke={1.5} />
       </ThemeIcon>
       <Stack gap={8}>
-        <Text c="Remoraid.8" fz={{ base: "sm", sm: "md" }} fw={600}>
+        <Text size="md" fw={600} c="black">
           {title}
         </Text>
-        <Text c="Remoraid.2" size="sm" style={{ lineHeight: 1.5 }}>
+        <Text c="Remoraid.8" size="sm" style={{ lineHeight: 1.5 }}>
           {description}
         </Text>
       </Stack>
