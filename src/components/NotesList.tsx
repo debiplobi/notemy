@@ -1,16 +1,16 @@
 "use client";
 import {
+  Autocomplete,
   Card,
   SimpleGrid,
-  Text,
-  Autocomplete,
   Stack,
+  Text,
   Title,
 } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
+import { IconSearch } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
-import { IconBolt, IconSearch } from "@tabler/icons-react";
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { decryptNote } from "@/lib/asymmetricKeyManager";
 import type { DecryptedNoteType } from "./Dashboard";
 import LoadingScreen from "./LoadingIcon";

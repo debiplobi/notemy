@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bitcount_Single, Geist, Geist_Mono, Lato } from "next/font/google";
+import { Geist, Geist_Mono, Lato } from "next/font/google";
 import "./globals.css";
 import "@mantine/core/styles.css";
 import {

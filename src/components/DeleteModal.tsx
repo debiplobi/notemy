@@ -1,8 +1,9 @@
-import { Modal, Group, Button, Text, ActionIcon } from "@mantine/core";
+import { ActionIcon, Button, Group, Modal, Text } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { IconTrash } from "@tabler/icons-react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 interface PropTypes {
   id: string;
   onCloseAction: () => void;

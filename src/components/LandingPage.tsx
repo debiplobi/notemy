@@ -1,21 +1,21 @@
 import {
+  Box,
   Button,
   Container,
   Group,
+  rem,
+  SimpleGrid,
   Stack,
   Text,
-  Title,
   ThemeIcon,
-  SimpleGrid,
-  rem,
-  Box,
+  Title,
 } from "@mantine/core";
 import {
+  type Icon,
+  IconBrandGithub,
+  IconEye,
   IconLock,
   IconShieldCheck,
-  IconEye,
-  IconBrandGithub,
-  Icon,
 } from "@tabler/icons-react";
 import Link from "next/link";
 

@@ -5,16 +5,14 @@ import {
   Group,
   Modal,
   Stack,
-  Text,
   Textarea,
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote } from "@/lib/asymmetricKeyManager";
-import classes from "@/styles/NoteForms.module.css";
-import { useDisclosure } from "@mantine/hooks";
 
 interface EncryptedNote {
   ciphertext: string;

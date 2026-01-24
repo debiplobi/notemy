@@ -9,11 +9,11 @@ import {
   Title,
 } from "@mantine/core";
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
+import { Bitcount_Single } from "next/font/google";
 import Link from "next/link";
 import secureLocalStorage from "react-secure-storage";
 import { authClient } from "../lib/auth-client";
 import { ThemeToggle } from "./ThemeToggle";
-import { Bitcount_Single } from "next/font/google";
 
 export const logoutFn = async () => {
   await authClient.signOut();
