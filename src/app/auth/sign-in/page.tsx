@@ -1,11 +1,11 @@
 "use client";
 
-import { Container, Center, Title, Stack, Text } from "@mantine/core";
-import { useEffect } from "react";
+import { Center, Container, Stack, Text, Title } from "@mantine/core";
+import { IconBolt } from "@tabler/icons-react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import SignIn from "@/components/sign-in";
 import { authClient } from "@/lib/auth-client";
-import { IconBolt } from "@tabler/icons-react";
 
 export default function SignInPage() {
   const { data: session, isPending } = authClient.useSession();
