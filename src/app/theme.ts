@@ -127,7 +127,7 @@ const theme: MantineThemeOverride = {
   /* TYPOGRAPHY                       */
   /* -------------------------------- */
   fontFamily: "Lato",
-  fontFamilyMonospace: "Roboto Mono",
+  fontFamilyMonospace: "monospace",
   headings: {
     fontFamily: "Geist",
     fontWeight: "500",

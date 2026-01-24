@@ -75,7 +75,7 @@ export const DeleteModal = ({ id, onCloseAction }: PropTypes) => {
         centered
         size="sm"
       >
-        <Text size="sm" mb="lg">
+        <Text size="sm" mb="lg" mt={"0.5em"}>
           Are you sure you want to delete this note? This action cannot be
           undone and the note will be permanently removed.
         </Text>

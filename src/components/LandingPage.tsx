@@ -7,16 +7,15 @@ import {
   Title,
   ThemeIcon,
   SimpleGrid,
-  Card,
   rem,
   Box,
-  useMantineTheme,
 } from "@mantine/core";
 import {
   IconLock,
   IconShieldCheck,
   IconEye,
   IconBrandGithub,
+  Icon,
 } from "@tabler/icons-react";
 import Link from "next/link";
 
@@ -119,7 +118,7 @@ function FeatureCard({
   title,
   description,
 }: {
-  icon: any;
+  icon: Icon;
   title: string;
   description: string;
 }) {
@@ -129,10 +128,10 @@ function FeatureCard({
         <Icon size={22} stroke={1.5} />
       </ThemeIcon>
       <Stack gap={8}>
-        <Text size="md" fw={600} c="black">
+        <Text size="md" fw={600}>
           {title}
         </Text>
-        <Text c="Remoraid.8" size="sm" style={{ lineHeight: 1.5 }}>
+        <Text c="Remoraid.2" size="sm" style={{ lineHeight: 1.5 }}>
           {description}
         </Text>
       </Stack>

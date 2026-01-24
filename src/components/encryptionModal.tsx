@@ -135,7 +135,7 @@ export function KeyGenerationModal({
         {isGeneratedUserKeys ? (
           // IMPORT MODE - User already has keys
           <>
-            <Text size="sm" c="dimmed">
+            <Text size="sm" c="dimmed" mt={"0.5em"}>
               Paste your private key or upload your .pem file to decrypt your
               data.
             </Text>

@@ -146,7 +146,6 @@ export function EditNoteForm({
               size="lg"
               styles={{
                 input: {
-                  fontWeight: 600,
                   fontSize: "1.25rem",
                   padding: "0.5rem",
                 },

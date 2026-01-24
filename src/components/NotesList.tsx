@@ -172,7 +172,7 @@ export default function NotesList({
                 {truncate(note.title, 30)}
               </Title>
               <Text
-                c="dimmed"
+                c="gray.7"
                 style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               >
                 {truncate(note.content, 100)}
