@@ -168,11 +168,11 @@ export default function NotesList({
                 openEditNoteModal();
               }}
             >
-              <Title fw={600} size="1.1rem">
+              <Text fw={600} size="1rem">
                 {truncate(note.title, 30)}
-              </Title>
+              </Text>
               <Text
-                c="gray.7"
+                c="gray.6"
                 style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
               >
                 {truncate(note.content, 100)}

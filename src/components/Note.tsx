@@ -146,7 +146,7 @@ export function EditNoteForm({
               size="lg"
               styles={{
                 input: {
-                  fontSize: "1.25rem",
+                  fontSize: "1.1rem",
                   padding: "0.5rem",
                 },
               }}
@@ -167,7 +167,7 @@ export function EditNoteForm({
                 },
                 input: {
                   flex: 1,
-                  fontSize: "1rem",
+                  fontSize: "1.01rem",
                   lineHeight: 1.6,
                   padding: "1rem",
                   resize: "none",

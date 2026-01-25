@@ -13,6 +13,12 @@ export function ThemeToggle() {
   return (
     <ActionIcon
       variant="transparent"
+      styles={{
+        root: {
+          color:
+            "light-dark(var(--mantine-color-Remoraid-7), var(--mantine-color-Remoraid-2))",
+        },
+      }}
       size="lg"
       aria-label="Toggle theme"
       onClick={toggleColorScheme}

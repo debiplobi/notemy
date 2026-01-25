@@ -7,6 +7,12 @@ export default function SignIn() {
       <form action={githubOAuthSignIn}>
         <Button
           type="submit"
+          styles={{
+            root: {
+              color:
+                "light-dark(var(--mantine-color-Remoraid-7), var(--mantine-color-Remoraid-2))",
+            },
+          }}
           leftSection={
             <svg
               width="18"
@@ -28,6 +34,12 @@ export default function SignIn() {
       <form action={googleOAuthSignIn}>
         <Button
           type="submit"
+          styles={{
+            root: {
+              color:
+                "light-dark(var(--mantine-color-Remoraid-7), var(--mantine-color-Remoraid-2))",
+            },
+          }}
           leftSection={
             <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <path
