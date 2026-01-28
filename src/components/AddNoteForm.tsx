@@ -1,19 +1,11 @@
 "use client";
-import {
-  Box,
-  Button,
-  Group,
-  Modal,
-  Stack,
-  Text,
-  Textarea,
-  TextInput,
-} from "@mantine/core";
+import { Box, Button, Group, Modal, Stack, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 import { useDisclosure } from "@mantine/hooks";
 import { notifications } from "@mantine/notifications";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote } from "@/lib/asymmetricKeyManager";
+import { RichTextEditorComp } from "./RichTextEditor";
 
 interface EncryptedNote {
   ciphertext: string;
@@ -72,6 +64,7 @@ export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
   });
 
   const handleSubmit = async (values: { title: string; content: string }) => {
+    console.log(values.content);
     try {
       const notePayload = JSON.stringify({
         title: values.title,
@@ -162,28 +155,9 @@ export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
                 }}
                 {...form.getInputProps("title")}
               />
-              <Textarea
-                placeholder="Start writing your note..."
-                styles={{
-                  root: {
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  },
-                  wrapper: {
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                  },
-                  input: {
-                    flex: 1,
-                    fontSize: "1.01rem",
-                    lineHeight: 1.6,
-                    padding: "1rem ",
-                    resize: "none",
-                  },
-                }}
-                {...form.getInputProps("content")}
+              <RichTextEditorComp
+                value={form.values.content}
+                onChange={(value) => form.setFieldValue("content", value)}
               />
             </Stack>
           </Box>

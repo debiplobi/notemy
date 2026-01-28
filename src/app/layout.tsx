@@ -12,6 +12,7 @@ import "@mantine/notifications/styles.css";
 import { Notifications } from "@mantine/notifications";
 import Navbar from "@/components/NavigationBar";
 import { TanstackProvider } from "@/providers/Tanstackprovider";
+import '@mantine/tiptap/styles.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

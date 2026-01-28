@@ -6,7 +6,6 @@ import {
   Modal,
   Stack,
   Text,
-  Textarea,
   TextInput,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
@@ -15,6 +14,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { encryptNote } from "@/lib/asymmetricKeyManager";
 import type { DecryptedNoteType } from "./Dashboard";
 import { DeleteModal } from "./DeleteModal";
+import { RichTextEditorComp } from "./RichTextEditor";
 
 interface EncryptedNotePayload {
   ciphertext: string;
@@ -152,28 +152,9 @@ export function EditNoteForm({
               }}
               {...form.getInputProps("title")}
             />
-            <Textarea
-              placeholder="Start writing your note..."
-              styles={{
-                root: {
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                },
-                wrapper: {
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                },
-                input: {
-                  flex: 1,
-                  fontSize: "1.01rem",
-                  lineHeight: 1.6,
-                  padding: "1rem",
-                  resize: "none",
-                },
-              }}
-              {...form.getInputProps("content")}
+            <RichTextEditorComp
+              value={form.values.content}
+              onChange={(value) => form.setFieldValue("content", value)}
             />
           </Stack>
         </Box>

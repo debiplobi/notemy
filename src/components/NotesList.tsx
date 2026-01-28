@@ -1,19 +1,14 @@
 "use client";
-import {
-  Autocomplete,
-  Card,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title,
-} from "@mantine/core";
+import { Autocomplete, Card, Stack, Text } from "@mantine/core";
 import { notifications } from "@mantine/notifications";
 import { IconSearch } from "@tabler/icons-react";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
+import Masonry from "react-masonry-css";
 import { decryptNote } from "@/lib/asymmetricKeyManager";
 import type { DecryptedNoteType } from "./Dashboard";
 import LoadingScreen from "./LoadingIcon";
+import { RichTextEditorPreview } from "./RichTextEditorPreview";
 
 interface EncryptedNote {
   id: string;
@@ -24,7 +19,7 @@ interface EncryptedNote {
   updatedAt: Date;
 }
 
-function truncate(text: string, max = 60) {
+export function truncateText(text: string, max: number) {
   if (text.length <= max) return text;
   return `${text.slice(0, max).trimEnd()}…`;
 }
@@ -132,6 +127,16 @@ export default function NotesList({
     );
   }
 
+  // Masonry breakpoints for responsive columns
+  const breakpointColumns = {
+    default: 4, // Desktop (≥ 1280px)
+    1280: 4,
+    1024: 3, // Small desktop
+    768: 2, // Tablet
+    640: 2, // Small tablet
+    480: 1, // Mobile
+  };
+
   return (
     <Stack gap="md">
       {/* Search Bar */}
@@ -151,36 +156,54 @@ export default function NotesList({
         />
       )}
 
-      {/* Notes Grid */}
+      {/* Notes Masonry Grid */}
       {filteredNotes.length === 0 ? (
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Text c="dimmed">No notes found matching "{searchQuery}"</Text>
         </div>
       ) : (
-        <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }}>
+        <Masonry
+          breakpointCols={breakpointColumns}
+          className="masonry-grid"
+          columnClassName="masonry-grid-column"
+        >
           {filteredNotes.map((note: DecryptedNoteType) => (
             <Card
               key={note.id}
-              p="md"
-              style={{ cursor: "pointer" }}
+              p="0"
+              shadow="sm"
+              withBorder
+              style={{
+                cursor: "pointer",
+                marginBottom: "1rem",
+              }}
               onClick={() => {
                 setSelectedNote(note);
                 openEditNoteModal();
               }}
             >
-              <Text fw={600} size="1rem">
-                {truncate(note.title, 30)}
-              </Text>
-              <Text
-                c="gray.6"
-                style={{ whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-              >
-                {truncate(note.content, 100)}
-              </Text>
+              {note.title && (
+                <Text fw={600} size="1rem" p="md">
+                  {truncateText(note.title, 30)}
+                </Text>
+              )}
+              <RichTextEditorPreview value={note.content} maxChars={300} />
             </Card>
           ))}
-        </SimpleGrid>
+        </Masonry>
       )}
+
+      <style jsx global>{`
+        .masonry-grid {
+          display: flex;
+          margin-left: -1rem;
+          width: auto;
+        }
+        .masonry-grid-column {
+          padding-left: 1rem;
+          background-clip: padding-box;
+        }
+      `}</style>
     </Stack>
   );
 }
