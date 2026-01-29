@@ -145,7 +145,7 @@ export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
               }}
             >
               <TextInput
-                placeholder="Enter note title..."
+                placeholder="Add a title (optional)"
                 size="lg"
                 styles={{
                   input: {

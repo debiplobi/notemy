@@ -15,6 +15,7 @@ import {
 } from "@tabler/icons-react";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Highlight from "@tiptap/extension-highlight";
+import Placeholder from "@tiptap/extension-placeholder";
 import { useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import bash from "highlight.js/lib/languages/bash";
@@ -55,6 +56,7 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
     extensions: [
       StarterKit.configure({ codeBlock: false }),
       CodeBlockLowlight.configure({ lowlight }),
+      Placeholder.configure({ placeholder: "Add a Content" }),
       Link,
       Highlight,
     ],
@@ -66,7 +68,26 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
   });
 
   return (
-    <RichTextEditor editor={editor} variant="subtle">
+    <RichTextEditor
+      editor={editor}
+      variant="subtle"
+      styles={{
+        root: {
+          display: "flex",
+          flexDirection: "column",
+        },
+        content: {
+          flex: 1,
+          height: "60vh", // 📱 mobile / default
+          overflowY: "auto",
+          overscrollBehavior: "contain",
+
+          "@media (min-width: 62em)": {
+            height: "80vh", // 🖥 desktop
+          },
+        },
+      }}
+    >
       <RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Bold icon={IconBold} />
@@ -83,6 +104,7 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
           <RichTextEditor.Link icon={IconLink} />
           <RichTextEditor.Unlink icon={IconLinkOff} />
         </RichTextEditor.ControlsGroup>
+
         <RichTextEditor.ControlsGroup>
           <RichTextEditor.Undo icon={IconArrowBackUp} />
           <RichTextEditor.Redo icon={IconArrowForwardUp} />

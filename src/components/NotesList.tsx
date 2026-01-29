@@ -187,7 +187,9 @@ export default function NotesList({
                   {truncateText(note.title, 30)}
                 </Text>
               )}
-              <RichTextEditorPreview value={note.content} maxChars={300} />
+              {note.content && (
+                <RichTextEditorPreview value={note.content} maxChars={300} />
+              )}
             </Card>
           ))}
         </Masonry>
