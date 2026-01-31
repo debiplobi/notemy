@@ -12,7 +12,7 @@ import "@mantine/notifications/styles.css";
 import { Notifications } from "@mantine/notifications";
 import Navbar from "@/components/NavigationBar";
 import { TanstackProvider } from "@/providers/Tanstackprovider";
-import '@mantine/tiptap/styles.css';
+import "@mantine/tiptap/styles.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,7 +32,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Notemy",
-  description: "Easy to use E2E Notes",
+  description: "Easy to use E2E Encrypted Notes",
 };
 
 export default function RootLayout({

@@ -78,12 +78,12 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
         },
         content: {
           flex: 1,
-          height: "60vh", // 📱 mobile / default
+          maxHeight: "60vh",
+          minHeight: "200px",
           overflowY: "auto",
           overscrollBehavior: "contain",
-
           "@media (min-width: 62em)": {
-            height: "80vh", // 🖥 desktop
+            maxHeight: "80vh",
           },
         },
       }}
