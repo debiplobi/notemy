@@ -101,3 +101,31 @@ export async function GET(request: Request) {
     { status: 200 },
   );
 }
+
+export async function DELETE(request: Request) {
+  // 1️⃣ Authenticate user
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  // 2️⃣ Check if user has any notes
+  const userNotes = await db
+    .select({ id: note.id })
+    .from(note)
+    .where(eq(note.userId, session.user.id));
+
+  if (userNotes.length > 0) {
+    // 3️⃣ Delete all notes for this user
+    await db.delete(note).where(eq(note.userId, session.user.id));
+  }
+
+  // 4️⃣ Return success with count
+  return NextResponse.json({
+    success: true,
+    message: `Successfully deleted all notes`,
+  });
+}

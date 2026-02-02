@@ -35,6 +35,9 @@ export default function Home() {
 
   const [privateKey, setPrivateKey] = useState<CryptoKey | null>(null);
   const [publicKey, setPublicKey] = useState<CryptoKey | null>(null);
+  const [publicKeyLoading, setPublicKeyLoading] = useState(true);
+  const [privateKeyLoading, setPrivateKeyLoading] = useState(true);
+  const [serverKeyLoading, setServerKeyLoading] = useState(false);
 
   const [keyModalOpened, { open: openKeyModal, close: closeKeyModal }] =
     useDisclosure(false);
@@ -47,28 +50,37 @@ export default function Home() {
   const [selectedNote, setSelectedNote] =
     useState<DecryptedNoteType>(EMPTY_NOTE);
 
+  // Load public key from local storage
   useEffect(() => {
     const loadPublicKey = async () => {
       const pem = secureLocalStorage.getItem("publicKey")?.toString() ?? "";
+
+      if (!pem) {
+        setPublicKeyLoading(false);
+        return;
+      }
 
       try {
         const key = await importPublicKey(pem);
         setPublicKey(key);
       } catch (err) {
-        console.log(err);
-        throw new Error("failed to import public key");
+        console.error("Failed to import public key:", err);
+        secureLocalStorage.removeItem("publicKey");
+      } finally {
+        setPublicKeyLoading(false);
       }
     };
 
     loadPublicKey();
   }, []);
 
+  // Load private key from local storage
   useEffect(() => {
     const loadPrivateKey = async () => {
       const pem = secureLocalStorage.getItem("privateKey")?.toString() ?? "";
 
       if (!pem) {
-        openKeyModal();
+        setPrivateKeyLoading(false);
         return;
       }
 
@@ -76,23 +88,30 @@ export default function Home() {
         const key = await importPrivateKey(pem);
         setPrivateKey(key);
       } catch (err) {
-        console.error(err);
-        openKeyModal();
-        throw new Error("failed to import private key");
+        console.error("Failed to import private key:", err);
+        secureLocalStorage.removeItem("privateKey");
+      } finally {
+        setPrivateKeyLoading(false);
       }
     };
 
-    loadPrivateKey();
-  }, [openKeyModal]);
+    if (!publicKeyLoading) {
+      loadPrivateKey();
+    }
+  }, [publicKeyLoading]);
 
+  // Fetch public key from server if not in local storage
   useEffect(() => {
     const fetchEncryptionKey = async () => {
       if (!session?.user) return;
 
+      setServerKeyLoading(true);
+
       try {
         const res = await fetch("/api/user/encryption-key");
         if (res.status === 404) {
-          console.error("Failed to fetch public key ");
+          console.error("Failed to fetch public key - not found");
+          setServerKeyLoading(false);
           return;
         }
         if (!res.ok) {
@@ -105,18 +124,31 @@ export default function Home() {
         setPublicKey(pem);
         secureLocalStorage.setItem("publicKey", json.encryptionKey);
       } catch (err) {
-        console.error(err);
-        openKeyModal();
-        throw new Error("Failed to fetch public key");
+        console.error("Failed to fetch public key:", err);
+      } finally {
+        setServerKeyLoading(false);
       }
     };
 
-    if (publicKey === null && session?.user) {
+    if (publicKey === null && session?.user && !publicKeyLoading && !privateKeyLoading) {
       fetchEncryptionKey();
     }
-  }, [session, publicKey, openKeyModal]);
+  }, [session, publicKey, publicKeyLoading, privateKeyLoading]);
 
-  if (isPending) {
+  // Open modal after all loading is complete and keys are missing
+  useEffect(() => {
+    const allLoadingComplete = !publicKeyLoading && !privateKeyLoading && !serverKeyLoading;
+    
+    if (allLoadingComplete && session?.user) {
+      if (!privateKey || !publicKey) {
+        openKeyModal();
+      }
+    }
+  }, [publicKeyLoading, privateKeyLoading, serverKeyLoading, privateKey, publicKey, session, openKeyModal]);
+
+  const isLoading = isPending || publicKeyLoading || privateKeyLoading || serverKeyLoading;
+
+  if (isLoading) {
     return (
       <div
         style={{

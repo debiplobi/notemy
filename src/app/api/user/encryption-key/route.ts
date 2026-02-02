@@ -77,3 +77,31 @@ export async function POST(request: Request) {
 
   return NextResponse.json({ success: true });
 }
+
+export async function DELETE(request: Request) {
+  const session = await auth.api.getSession({
+    headers: request.headers,
+  });
+
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const [existing] = await db
+    .select({ encryptionKey: user.encryptionKey })
+    .from(user)
+    .where(eq(user.id, session.user.id))
+    .limit(1);
+
+  if (existing?.encryptionKey) {
+    await db
+      .update(user)
+      .set({
+        encryptionKey: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(user.id, session.user.id));
+  }
+
+  return NextResponse.json({ success: true });
+}

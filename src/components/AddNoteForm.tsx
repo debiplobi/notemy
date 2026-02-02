@@ -64,7 +64,6 @@ export function AddNoteForm({ publicKey }: { publicKey: CryptoKey }) {
   });
 
   const handleSubmit = async (values: { title: string; content: string }) => {
-    console.log(values.content);
     try {
       const notePayload = JSON.stringify({
         title: values.title,

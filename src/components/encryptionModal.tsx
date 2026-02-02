@@ -10,6 +10,7 @@ import {
   Text,
   Textarea,
 } from "@mantine/core";
+import { IconAlertTriangle, IconRestore } from "@tabler/icons-react";
 import { useState } from "react";
 import secureLocalStorage from "react-secure-storage";
 import {
@@ -33,6 +34,10 @@ export function KeyGenerationModal({
   const [isGenerating, setIsGenerating] = useState(false);
   const [privateKeyInput, setPrivateKeyInput] = useState("");
   const [importError, setImportError] = useState("");
+  const [forgotKey, setForgotKey] = useState(false);
+  const [showConfirmRegenerateModal, setShowConfirmRegenerateModal] =
+    useState(false);
+  const [isRegenerating, setIsRegenerating] = useState(false);
 
   const handleUploadPubKeyToServer = async (
     pubKeyPem: string,
@@ -55,17 +60,62 @@ export function KeyGenerationModal({
       throw new Error("failed to sent public key to server");
     }
   };
+  const handleDeleteEncryptionKey = async () => {
+    const resp = await fetch("/api/user/encryption-key", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!resp.ok) {
+      const error = await resp.json().catch(() => ({ error: "Unknown error" }));
+      throw new Error(
+        `Failed to delete the old key: ${error.error || resp.statusText}`,
+      );
+    }
+    await resp.json();
+  };
+
+  const handleDeleteAllUserNotes = async () => {
+    const resp = await fetch("/api/note", {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (!resp.ok) {
+      const error = await resp.json().catch(() => ({ error: "Unknown error" }));
+      throw new Error(
+        `Failed to delete all notes user had: ${error.error || resp.statusText}`,
+      );
+    }
+    await resp.json();
+  };
+
+  const handleRegenerateKey = async (pubKeyPem: string, privKeyPem: string) => {
+    try {
+      setIsRegenerating(true);
+      await handleDeleteEncryptionKey();
+      await handleDeleteAllUserNotes();
+      await handleUploadPubKeyToServer(pubKeyPem, privKeyPem);
+    } catch (error) {
+      console.error("Failed to regenerate keys:", error);
+      alert("Failed to regenerate keys. Please try again.");
+      setIsRegenerating(false);
+    }
+  };
 
   const generateKeys = async () => {
     try {
       setIsGenerating(true);
-      // Generate the key pair
       const keyPair = await generateUserKeyPair();
-
-      // Export to PEM format
       const exportedKeys = await exportKeyPair(keyPair);
 
       setKeys(exportedKeys);
+
+      // Save keys to secureLocalStorage immediately after generation
+      secureLocalStorage.setItem("privateKey", exportedKeys.privateKeyPem);
+      secureLocalStorage.setItem("publicKey", exportedKeys.publicKeyPem);
     } catch (error) {
       console.error("Failed to generate keys:", error);
       alert("Failed to generate keys. Please try again.");
@@ -102,137 +152,63 @@ export function KeyGenerationModal({
   const handleImportKey = async () => {
     try {
       setImportError("");
-
-      // Validate the key
       await importPrivateKey(privateKeyInput);
-
-      // Store key
       secureLocalStorage.setItem("privateKey", privateKeyInput);
-
-      // Close modal
       onCloseAction();
     } catch (_error) {
       setImportError(
         "Invalid private key format. Please check your key and try again.",
       );
     } finally {
-      // 🔥 FULL window reload (hard refresh)
       window.location.reload();
     }
   };
 
+  const handleConfirmRegenerate = async () => {
+    setShowConfirmRegenerateModal(false);
+    setForgotKey(true);
+    // Automatically generate keys after confirmation
+    await generateKeys();
+  };
+
   return (
-    <Modal
-      opened={opened}
-      onClose={() => {}}
-      title={
-        isGeneratedUserKeys ? "Import Your Private Key" : "Encryption Key Setup"
-      }
-      centered
-      size="lg"
-    >
-      <Stack gap="md">
-        {isGeneratedUserKeys ? (
-          // IMPORT MODE - User already has keys
-          <>
-            <Text size="sm" c="dimmed" mt={"0.5em"}>
-              Paste your private key or upload your .pem file to decrypt your
-              data.
-            </Text>
+    <>
+      <Modal
+        opened={opened}
+        onClose={() => {}}
+        title={
+          !forgotKey && isGeneratedUserKeys
+            ? "Import Your Private Key"
+            : "Encryption Key Setup"
+        }
+        centered
+        size="lg"
+      >
+        <Stack gap="md">
+          {isGeneratedUserKeys && !forgotKey ? (
+            // IMPORT MODE - User already has keys
+            <>
+              <Text size="sm" c="dimmed" mt={"0.5em"}>
+                Paste your private key or upload your .pem file to decrypt your
+                data.
+              </Text>
 
-            {importError && (
-              <Alert color="red" title="Error">
-                {importError}
-              </Alert>
-            )}
+              {importError && (
+                <Alert color="red" title="Error">
+                  {importError}
+                </Alert>
+              )}
 
-            <Textarea
-              label="Private Key"
-              placeholder="-----BEGIN PRIVATE KEY-----
+              <Textarea
+                label="Private Key"
+                placeholder="-----BEGIN PRIVATE KEY-----
 ...
 -----END PRIVATE KEY-----"
-              value={privateKeyInput}
-              onChange={(e) => setPrivateKeyInput(e.currentTarget.value)}
-              autosize
-              minRows={8}
-              maxRows={15}
-              styles={{
-                input: {
-                  fontFamily: "monospace",
-                  fontSize: "0.75rem",
-                },
-              }}
-            />
-
-            <Group gap="xs">
-              <FileButton accept=".pem,text/plain" onChange={handleFileUpload}>
-                {(props) => (
-                  <Button {...props} variant="light">
-                    Upload .pem File
-                  </Button>
-                )}
-              </FileButton>
-
-              <CopyButton value={privateKeyInput}>
-                {({ copied, copy }) => (
-                  <Button
-                    variant="subtle"
-                    onClick={copy}
-                    disabled={!privateKeyInput}
-                  >
-                    {copied ? "Copied!" : "Copy"}
-                  </Button>
-                )}
-              </CopyButton>
-            </Group>
-
-            <Group justify="space-between" mt="md">
-              <Button variant="filled" color="red" onClick={() => logoutFn()}>
-                Logout
-              </Button>
-              <Group>
-                <Button variant="default" onClick={onCloseAction}>
-                  Cancel
-                </Button>
-                <Button
-                  onClick={() => handleImportKey()}
-                  disabled={!privateKeyInput}
-                >
-                  Import Key
-                </Button>
-              </Group>
-            </Group>
-          </>
-        ) : // GENERATION MODE - New user
-        !keys ? (
-          <>
-            <Text size="sm" c="dimmed">
-              This will generate your encryption keys. The private key will be
-              shown only once. Make sure to save it securely.
-            </Text>
-            <Button onClick={generateKeys} loading={isGenerating} fullWidth>
-              Generate Keys
-            </Button>
-          </>
-        ) : (
-          <>
-            <Alert color="red" title="! Important Warning">
-              Save your private key securely. You will NOT see it again. Store
-              it in a safe place like a password manager or download it to a
-              secure location.
-            </Alert>
-
-            {/* PRIVATE KEY ONLY */}
-            <div>
-              <Text size="sm" fw={600} mb="xs" c="red">
-                Private Key (keep secret!)
-              </Text>
-              <Textarea
-                value={keys.privateKeyPem}
-                readOnly
+                value={privateKeyInput}
+                onChange={(e) => setPrivateKeyInput(e.currentTarget.value)}
                 autosize
                 minRows={8}
-                maxRows={12}
+                maxRows={15}
                 styles={{
                   input: {
                     fontFamily: "monospace",
@@ -240,45 +216,193 @@ export function KeyGenerationModal({
                   },
                 }}
               />
-              <Group mt="xs" gap="xs">
-                <CopyButton value={keys.privateKeyPem}>
+
+              <Group gap="xs">
+                <FileButton
+                  accept=".pem,text/plain"
+                  onChange={handleFileUpload}
+                >
+                  {(props) => <Button {...props}>Upload .pem File</Button>}
+                </FileButton>
+
+                <CopyButton value={privateKeyInput}>
                   {({ copied, copy }) => (
                     <Button
-                      color="red"
-                      variant="light"
+                      variant="subtle"
                       onClick={copy}
-                      size="xs"
+                      disabled={!privateKeyInput}
                     >
-                      {copied ? "Copied!" : "Copy Private Key"}
+                      {copied ? "Copied!" : "Copy"}
                     </Button>
                   )}
                 </CopyButton>
+
                 <Button
+                  variant="light"
                   color="red"
-                  variant="subtle"
-                  onClick={downloadPrivateKey}
-                  size="xs"
+                  onClick={() => setShowConfirmRegenerateModal(true)}
+                  leftSection={<IconRestore size={16} />}
                 >
-                  Download as .pem
+                  Regenerate
                 </Button>
               </Group>
-            </div>
-            <Group justify="flex-end" mt="md">
-              <Button
-                onClick={() =>
-                  handleUploadPubKeyToServer(
-                    keys.publicKeyPem,
-                    keys.privateKeyPem,
-                  )
-                }
-                variant="filled"
-              >
-                I've Saved My Key
+
+              <Group justify="space-between" mt="md">
+                <Button variant="filled" color="red" onClick={() => logoutFn()}>
+                  Logout
+                </Button>
+                <Group>
+                  <Button variant="default" onClick={onCloseAction}>
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={() => handleImportKey()}
+                    disabled={!privateKeyInput}
+                  >
+                    Import Key
+                  </Button>
+                </Group>
+              </Group>
+            </>
+          ) : // GENERATION MODE - New user
+          !keys ? (
+            <>
+              <Text size="sm" c="dimmed">
+                This will generate your encryption keys. The private key will be
+                shown only once. Make sure to save it securely.
+              </Text>
+              <Button onClick={generateKeys} loading={isGenerating} fullWidth>
+                Generate Keys
               </Button>
-            </Group>
-          </>
-        )}
-      </Stack>
-    </Modal>
+            </>
+          ) : (
+            <>
+              <Alert color="red" title="! Important Warning">
+                Save your private key securely. You will NOT see it again. Store
+                it in a safe place like a password manager or download it to a
+                secure location.
+              </Alert>
+
+              {/* PRIVATE KEY ONLY */}
+              <div>
+                <Text size="sm" fw={600} mb="xs" c="red">
+                  Private Key (keep secret!)
+                </Text>
+                <Textarea
+                  value={keys.privateKeyPem}
+                  readOnly
+                  autosize
+                  minRows={8}
+                  maxRows={12}
+                  styles={{
+                    input: {
+                      fontFamily: "monospace",
+                      fontSize: "0.75rem",
+                    },
+                  }}
+                />
+                <Group mt="xs" gap="xs">
+                  <CopyButton value={keys.privateKeyPem}>
+                    {({ copied, copy }) => (
+                      <Button
+                        color="red"
+                        variant="light"
+                        onClick={copy}
+                        size="xs"
+                      >
+                        {copied ? "Copied!" : "Copy Private Key"}
+                      </Button>
+                    )}
+                  </CopyButton>
+                  <Button
+                    color="red"
+                    variant="subtle"
+                    onClick={downloadPrivateKey}
+                    size="xs"
+                  >
+                    Download as .pem
+                  </Button>
+                </Group>
+              </div>
+              <Group justify="flex-end" mt="md">
+                <Button
+                  onClick={() =>
+                    handleRegenerateKey(keys.publicKeyPem, keys.privateKeyPem)
+                  }
+                  variant="filled"
+                  loading={isRegenerating}
+                  disabled={isRegenerating}
+                >
+                  I've Saved My Key
+                </Button>
+              </Group>
+            </>
+          )}
+        </Stack>
+      </Modal>
+
+      {/* Confirmation Modal for Regenerate */}
+      <Modal
+        opened={showConfirmRegenerateModal}
+        onClose={() => setShowConfirmRegenerateModal(false)}
+        title={
+          <Group gap="xs">
+            <IconAlertTriangle size={24} color="red" />
+            <Text fw={600}>Confirm Key Regeneration</Text>
+          </Group>
+        }
+        centered
+        size="md"
+      >
+        <Stack gap="md">
+          <Alert color="red" title="Warning: This action is irreversible!">
+            <Stack gap="sm">
+              <Text size="sm">Regenerating your encryption key will:</Text>
+              <ul style={{ margin: 0, paddingLeft: "1.2rem" }}>
+                <li>
+                  <Text size="sm" fw={500}>
+                    Permanently delete ALL of your existing notes
+                  </Text>
+                </li>
+                <li>
+                  <Text size="sm" fw={500}>
+                    Make your old private key useless
+                  </Text>
+                </li>
+                <li>
+                  <Text size="sm" fw={500}>
+                    Require you to save a new private key
+                  </Text>
+                </li>
+              </ul>
+              <Text size="sm" mt="xs">
+                This cannot be undone. All encrypted data will be lost forever.
+              </Text>
+            </Stack>
+          </Alert>
+
+          <Text size="sm" c="dimmed">
+            Only proceed if you understand that all your notes will be deleted
+            and you're ready to start fresh with a new encryption key.
+          </Text>
+
+          <Group justify="flex-end" mt="md">
+            <Button
+              variant="default"
+              onClick={() => setShowConfirmRegenerateModal(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              color="red"
+              onClick={handleConfirmRegenerate}
+              leftSection={<IconAlertTriangle size={16} />}
+            >
+              Yes, Delete All Notes & Regenerate
+            </Button>
+          </Group>
+        </Stack>
+      </Modal>
+    </>
   );
 }
