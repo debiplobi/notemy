@@ -3,7 +3,7 @@
 import { Link, RichTextEditor } from "@mantine/tiptap";
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Highlight from "@tiptap/extension-highlight";
-import { useEditor } from "@tiptap/react";
+import { ReactNodeViewRenderer, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 
 import bash from "highlight.js/lib/languages/bash";
@@ -17,6 +17,7 @@ import python from "highlight.js/lib/languages/python";
 import rust from "highlight.js/lib/languages/rust";
 import ts from "highlight.js/lib/languages/typescript";
 import { createLowlight } from "lowlight";
+import { CodeBlockComponent } from "./CodeBlockComponent";
 import { truncateText } from "./NotesList";
 
 interface RichTextEditorPreviewProps {
@@ -46,7 +47,11 @@ export function RichTextEditorPreview({
   const editor = useEditor({
     extensions: [
       StarterKit.configure({ codeBlock: false }),
-      CodeBlockLowlight.configure({ lowlight }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(CodeBlockComponent);
+        },
+      }).configure({ lowlight }),
       Link,
       Highlight,
     ],

@@ -130,23 +130,38 @@ export default function Home() {
       }
     };
 
-    if (publicKey === null && session?.user && !publicKeyLoading && !privateKeyLoading) {
+    if (
+      publicKey === null &&
+      session?.user &&
+      !publicKeyLoading &&
+      !privateKeyLoading
+    ) {
       fetchEncryptionKey();
     }
   }, [session, publicKey, publicKeyLoading, privateKeyLoading]);
 
   // Open modal after all loading is complete and keys are missing
   useEffect(() => {
-    const allLoadingComplete = !publicKeyLoading && !privateKeyLoading && !serverKeyLoading;
-    
+    const allLoadingComplete =
+      !publicKeyLoading && !privateKeyLoading && !serverKeyLoading;
+
     if (allLoadingComplete && session?.user) {
       if (!privateKey || !publicKey) {
         openKeyModal();
       }
     }
-  }, [publicKeyLoading, privateKeyLoading, serverKeyLoading, privateKey, publicKey, session, openKeyModal]);
+  }, [
+    publicKeyLoading,
+    privateKeyLoading,
+    serverKeyLoading,
+    privateKey,
+    publicKey,
+    session,
+    openKeyModal,
+  ]);
 
-  const isLoading = isPending || publicKeyLoading || privateKeyLoading || serverKeyLoading;
+  const isLoading =
+    isPending || publicKeyLoading || privateKeyLoading || serverKeyLoading;
 
   if (isLoading) {
     return (

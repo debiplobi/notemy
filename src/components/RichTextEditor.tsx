@@ -16,7 +16,7 @@ import {
 import CodeBlockLowlight from "@tiptap/extension-code-block-lowlight";
 import Highlight from "@tiptap/extension-highlight";
 import Placeholder from "@tiptap/extension-placeholder";
-import { useEditor } from "@tiptap/react";
+import { ReactNodeViewRenderer, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import bash from "highlight.js/lib/languages/bash";
 import c from "highlight.js/lib/languages/c";
@@ -29,6 +29,7 @@ import python from "highlight.js/lib/languages/python";
 import rust from "highlight.js/lib/languages/rust";
 import ts from "highlight.js/lib/languages/typescript";
 import { createLowlight } from "lowlight";
+import { CodeBlockComponent } from "./CodeBlockComponent";
 
 interface RichTextEditorProps {
   value: string;
@@ -55,7 +56,11 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
     shouldRerenderOnTransaction: true,
     extensions: [
       StarterKit.configure({ codeBlock: false }),
-      CodeBlockLowlight.configure({ lowlight }),
+      CodeBlockLowlight.extend({
+        addNodeView() {
+          return ReactNodeViewRenderer(CodeBlockComponent);
+        },
+      }).configure({ lowlight }),
       Placeholder.configure({ placeholder: "Add a Content" }),
       Link,
       Highlight,
