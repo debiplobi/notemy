@@ -1276,9 +1276,9 @@ klona@^2.0.6:
   integrity sha512-dhG34DXATL5hSxJbIexCft8FChFXtmskoZYnoPWjXQuebWYCNkVeV3KkGegCK9CP1oswI/vQibS2GY7Em/sJJA==
 
 kysely@^0.28.5:
-  version "0.28.9"
-  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.28.9.tgz#c7a0e84a78b2990b95a7517f5670cae9e93df8e0"
-  integrity sha512-3BeXMoiOhpOwu62CiVpO6lxfq4eS6KMYfQdMsN/2kUCRNuF2YiEr7u0HLHaQU+O4Xu8YXE3bHVkwaQ85i72EuA==
+  version "0.28.12"
+  resolved "https://registry.yarnpkg.com/kysely/-/kysely-0.28.12.tgz#bb21e998cac234ef6428ead96c59a56a9e663b2b"
+  integrity sha512-kWiueDWXhbCchgiotwXkwdxZE/6h56IHAeFWg4euUfW0YsmO9sxbAxzx1KLLv2lox15EfuuxHQvgJ1qIfZuHGw==
 
 linkify-it@^5.0.0:
   version "5.0.0"
