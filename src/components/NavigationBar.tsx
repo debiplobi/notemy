@@ -11,14 +11,14 @@ import {
 import { IconLogout, IconSettings, IconUser } from "@tabler/icons-react";
 import { Bitcount_Single } from "next/font/google";
 import Link from "next/link";
-import secureLocalStorage from "react-secure-storage";
+import { clearPrivateKey } from "@/lib/keyStorage";
 import { authClient } from "../lib/auth-client";
 import { ThemeToggle } from "./ThemeToggle";
 
 export const logoutFn = async () => {
   await authClient.signOut();
-  secureLocalStorage.removeItem("privateKey");
-  secureLocalStorage.removeItem("publicKey");
+  clearPrivateKey();
+  localStorage.removeItem("publicKey");
   window.location.reload();
 };
 

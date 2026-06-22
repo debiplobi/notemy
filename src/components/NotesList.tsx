@@ -188,7 +188,11 @@ export default function NotesList({
                 </Text>
               )}
               {note.content && (
-                <RichTextEditorPreview value={note.content} maxChars={300} />
+                <RichTextEditorPreview
+                  key={`${note.id}-${note.updatedAt}`}
+                  value={note.content}
+                  maxChars={500}
+                />
               )}
             </Card>
           ))}

@@ -33,3 +33,18 @@
     -webkit-mask-position: top;
   }
 }
+
+/* RichText EDITOR */
+.content {
+  flex: 1;
+  max-height: 60vh;
+  min-height: 200px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+@media (min-width: 62em) {
+  .content {
+    max-height: 80vh;
+  }
+}

@@ -3,13 +3,13 @@
 import { useDisclosure } from "@mantine/hooks";
 import { IconBolt } from "@tabler/icons-react";
 import { useEffect, useState } from "react";
-import secureLocalStorage from "react-secure-storage";
 import { AddNoteForm } from "@/components/AddNoteForm";
 import { KeyGenerationModal } from "@/components/encryptionModal";
 import LandingPage from "@/components/LandingPage";
 import NotesList from "@/components/NotesList";
 import { importPrivateKey, importPublicKey } from "@/lib/asymmetricKeyManager";
 import { authClient } from "@/lib/auth-client";
+import { loadPrivateKey } from "@/lib/keyStorage";
 import { EditNoteForm } from "./Note";
 
 type EncryptionKeyResp = { encryptionKey: string };
@@ -53,7 +53,7 @@ export default function Home() {
   // Load public key from local storage
   useEffect(() => {
     const loadPublicKey = async () => {
-      const pem = secureLocalStorage.getItem("publicKey")?.toString() ?? "";
+      const pem = localStorage.getItem("publicKey")?.toString() ?? "";
 
       if (!pem) {
         setPublicKeyLoading(false);
@@ -65,7 +65,7 @@ export default function Home() {
         setPublicKey(key);
       } catch (err) {
         console.error("Failed to import public key:", err);
-        secureLocalStorage.removeItem("publicKey");
+        localStorage.removeItem("publicKey");
       } finally {
         setPublicKeyLoading(false);
       }
@@ -76,27 +76,19 @@ export default function Home() {
 
   // Load private key from local storage
   useEffect(() => {
-    const loadPrivateKey = async () => {
-      const pem = secureLocalStorage.getItem("privateKey")?.toString() ?? "";
-
-      if (!pem) {
-        setPrivateKeyLoading(false);
-        return;
-      }
-
+    const loadStoredPrivateKey = async () => {
       try {
-        const key = await importPrivateKey(pem);
-        setPrivateKey(key);
+        const privateKey = await loadPrivateKey(); // imported function
+        setPrivateKey(privateKey);
       } catch (err) {
         console.error("Failed to import private key:", err);
-        secureLocalStorage.removeItem("privateKey");
       } finally {
         setPrivateKeyLoading(false);
       }
     };
 
     if (!publicKeyLoading) {
-      loadPrivateKey();
+      loadStoredPrivateKey();
     }
   }, [publicKeyLoading]);
 
@@ -109,6 +101,7 @@ export default function Home() {
 
       try {
         const res = await fetch("/api/user/encryption-key");
+        console.log(res);
         if (res.status === 404) {
           console.error("Failed to fetch public key - not found");
           setServerKeyLoading(false);
@@ -122,7 +115,7 @@ export default function Home() {
         const pem = await importPublicKey(json.encryptionKey);
 
         setPublicKey(pem);
-        secureLocalStorage.setItem("publicKey", json.encryptionKey);
+        localStorage.setItem("publicKey", json.encryptionKey);
       } catch (err) {
         console.error("Failed to fetch public key:", err);
       } finally {
@@ -130,16 +123,11 @@ export default function Home() {
       }
     };
 
-    if (
-      publicKey === null &&
-      session?.user &&
-      !publicKeyLoading &&
-      !privateKeyLoading
-    ) {
+    if (publicKey === null && session?.user && !publicKeyLoading) {
       fetchEncryptionKey();
     }
-  }, [session, publicKey, publicKeyLoading, privateKeyLoading]);
-
+  }, [session, publicKey, publicKeyLoading]);
+  //
   // Open modal after all loading is complete and keys are missing
   useEffect(() => {
     const allLoadingComplete =

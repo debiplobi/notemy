@@ -12,13 +12,13 @@ import {
 } from "@mantine/core";
 import { IconAlertTriangle, IconRestore } from "@tabler/icons-react";
 import { useState } from "react";
-import secureLocalStorage from "react-secure-storage";
 import {
   type ExportedKeys,
   exportKeyPair,
   generateUserKeyPair,
   importPrivateKey,
 } from "@/lib/asymmetricKeyManager";
+import { storePrivateKey } from "@/lib/keyStorage";
 import { logoutFn } from "./NavigationBar";
 
 export function KeyGenerationModal({
@@ -39,10 +39,7 @@ export function KeyGenerationModal({
     useState(false);
   const [isRegenerating, setIsRegenerating] = useState(false);
 
-  const handleUploadPubKeyToServer = async (
-    pubKeyPem: string,
-    privKeyPem: string,
-  ) => {
+  const handleUploadPubKeyToServer = async (pubKeyPem: string) => {
     const resp = await fetch("/api/user/encryption-key", {
       method: "POST",
       headers: {
@@ -54,7 +51,6 @@ export function KeyGenerationModal({
     });
     if (resp.status === 200) {
       onCloseAction();
-      secureLocalStorage.setItem("privateKey", privKeyPem);
       window.location.reload();
     } else {
       throw new Error("failed to sent public key to server");
@@ -92,12 +88,12 @@ export function KeyGenerationModal({
     await resp.json();
   };
 
-  const handleRegenerateKey = async (pubKeyPem: string, privKeyPem: string) => {
+  const handleRegenerateKey = async (pubKeyPem: string) => {
     try {
       setIsRegenerating(true);
       await handleDeleteEncryptionKey();
       await handleDeleteAllUserNotes();
-      await handleUploadPubKeyToServer(pubKeyPem, privKeyPem);
+      await handleUploadPubKeyToServer(pubKeyPem);
     } catch (error) {
       console.error("Failed to regenerate keys:", error);
       alert("Failed to regenerate keys. Please try again.");
@@ -109,13 +105,12 @@ export function KeyGenerationModal({
     try {
       setIsGenerating(true);
       const keyPair = await generateUserKeyPair();
+
       const exportedKeys = await exportKeyPair(keyPair);
 
       setKeys(exportedKeys);
 
-      // Save keys to secureLocalStorage immediately after generation
-      secureLocalStorage.setItem("privateKey", exportedKeys.privateKeyPem);
-      secureLocalStorage.setItem("publicKey", exportedKeys.publicKeyPem);
+      await storePrivateKey(keyPair.privateKey);
     } catch (error) {
       console.error("Failed to generate keys:", error);
       alert("Failed to generate keys. Please try again.");
@@ -152,8 +147,8 @@ export function KeyGenerationModal({
   const handleImportKey = async () => {
     try {
       setImportError("");
-      await importPrivateKey(privateKeyInput);
-      secureLocalStorage.setItem("privateKey", privateKeyInput);
+      const privateKey = await importPrivateKey(privateKeyInput);
+      storePrivateKey(privateKey);
       onCloseAction();
     } catch (_error) {
       setImportError(
@@ -326,9 +321,7 @@ export function KeyGenerationModal({
               </div>
               <Group justify="flex-end" mt="md">
                 <Button
-                  onClick={() =>
-                    handleRegenerateKey(keys.publicKeyPem, keys.privateKeyPem)
-                  }
+                  onClick={() => handleRegenerateKey(keys.publicKeyPem)}
                   variant="filled"
                   loading={isRegenerating}
                   disabled={isRegenerating}

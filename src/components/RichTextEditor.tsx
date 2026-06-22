@@ -81,16 +81,6 @@ export function RichTextEditorComp({ value, onChange }: RichTextEditorProps) {
           display: "flex",
           flexDirection: "column",
         },
-        content: {
-          flex: 1,
-          maxHeight: "60vh",
-          minHeight: "200px",
-          overflowY: "auto",
-          overscrollBehavior: "contain",
-          "@media (min-width: 62em)": {
-            maxHeight: "80vh",
-          },
-        },
       }}
     >
       <RichTextEditor.Toolbar sticky stickyOffset="var(--docs-header-height)">
